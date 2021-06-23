@@ -61,7 +61,6 @@
     <script>
         let socket = new Websocket("ws://localhost:5500");
         let buttonElement = document.getElementById("send-message");
-
         async function sendMessage(message) {
             await socket.send(message);
             let response = await socket.receive();

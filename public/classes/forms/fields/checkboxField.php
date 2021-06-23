@@ -12,12 +12,4 @@ class CheckboxField extends LabeledField {
         $html .= "<input class='$class' type='checkbox' name='$this->name' value='$this->value'>";
         return $this->wrapWithLabel($html);
     }
-
-    function validateField(): string
-    {
-        if ($this->mustValidate) {
-
-        }
-        return "";
-    }
 }

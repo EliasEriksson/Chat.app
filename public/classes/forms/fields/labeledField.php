@@ -20,4 +20,16 @@ abstract class LabeledField extends Field {
         $prefixedLabelClass = $this->prefixClass("label");
         return "<label class='$prefixedLabelClass'>$htmlNode</label>";
     }
+
+    public function validateField(): string
+    {
+        if ($this->mustValidate) {
+            if (!isset($_POST[$this->name])) {
+                return ucfirst("$this->labelText is missing in your request please resubmit.");
+            } elseif (!($_POST[$this->name])) {
+                return ucfirst("$this->labelText can not be left empty.");
+            }
+        }
+        return "";
+    }
 }
