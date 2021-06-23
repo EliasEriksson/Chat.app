@@ -1,0 +1,173 @@
+@import url("https://necolas.github.io/normalize.css/8.0.1/normalize.css");
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Montserrat:wght@400;700&family=Nunito+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  font-family: "Nunito Sans", "arial", "sans-serif";
+  box-sizing: border-box;
+  color: #fffa;
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 5rem;
+}
+
+.wave-bg {
+  background-image: url("../assets/img/wave.svg");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: left;
+  background-size: cover;
+  animation: gradient 120s infinite ease-out;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+a {
+  font-weight: bold;
+  color: inherit;
+}
+
+h1 {
+  font-family: "Baloo 2", "arial", "sans-serif";
+  font-size: 3rem;
+  margin: 0;
+  margin-bottom: 0.5rem;
+  line-height: 1.1;
+  color: #fffd;
+}
+
+header {
+  max-width: 1920px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  max-width: 95%;
+}
+
+header nav a {
+  margin-left: 0.2rem !important;
+}
+
+footer {
+  margin: auto;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 5rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.button {
+  background: #bb86fc;
+  color: #eeedea;
+  padding: 0.5rem 0.67rem;
+  margin: 0.2rem;
+  border: 0.1rem solid #bb86fc;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.2rem #bb86fc;
+  width: max-content;
+  margin: 0.2rem auto;
+  transition: 0.2s ease-out;
+}
+
+.button:hover {
+  filter: saturate(2);
+  opacity: 0.8;
+}
+
+.button-outline {
+  color: #bb86fc;
+  background: none;
+}
+
+body {
+  background: #191a1fee;
+}
+
+#servers {
+  display: flex;
+  gap: 1rem;
+}
+
+#servers .server {
+  overflow: hidden;
+  width: 5rem;
+  height: 5rem;
+  box-shadow: 0 0 0.5rem #1234;
+  position: relative;
+}
+
+#servers * {
+  transition: 0.5s ease-out;
+}
+
+#servers .server:hover img {
+  transform: scale(1.1);
+}
+
+#servers .ping {
+  box-shadow: 0 0 0.2rem 0.2rem red;
+}
+
+#servers .server:hover {
+  border-radius: 0;
+}
+
+.server img {
+  width: 100%;
+  object-fit: contain;
+}
+
+#container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 1rem;
+}
+
+p {
+  margin-bottom: 1.5rem;
+}
+
+.wave {
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  text-align: center;
+  max-width: 60ch;
+  background: #191a1fee;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-top: 6rem;
+  box-shadow: 0 0.2rem 0.5rem #bb86fc;
+}
+
+/* 
+gold - d59140 
+blue - B3DDE2*/
+/*# sourceMappingURL=style.scss.map */
+
+/*# sourceMappingURL=style.css.map */
