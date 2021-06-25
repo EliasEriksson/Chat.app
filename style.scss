@@ -17,14 +17,14 @@ $nunito : 'Nunito Sans',
 'arial',
 'sans-serif';
 
-$gold   : #d59140;
-$blue   : #b3dde2;
-$grey   : #3F3E40;
-$white  : #eeedea;
-$dark   : #191a1fee;
-$light  : #23242aee;
-$medium : #fff1;
-$light  : #fff2;
+$gold      : #d59140;
+$blue      : #b3dde2;
+$grey      : #3F3E40;
+$white     : #eeedea;
+$dark      : #191a1fee;
+$light     : #23242aee;
+$medium    : #fff1;
+// $light  : #fff2;
 
 $disabled   : #fff3;
 $text-medium: #fffa;
@@ -143,11 +143,6 @@ body {
   background: $dark;
 }
 
-#servers {
-  display: flex;
-  gap    : 1rem;
-}
-
 #servers .server {
   overflow  : hidden;
   width     : 5rem;
@@ -196,9 +191,6 @@ p {
   right   : 0;
 }
 
-
-
-
 .hero {
   display       : flex;
   flex-direction: column;
@@ -213,6 +205,68 @@ p {
 
 }
 
+.w-big {
+  max-width: 1600px;
+  width    : 95%;
+}
+
+.m-auto {
+  margin: auto;
+}
+
+#servers {
+  display              : grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 250px));
+  justify-content      : center;
+  text-align           : center;
+  margin-top           : 1rem;
+  gap                  : 1rem;
+}
+
+#servers .server-icon {
+  text-decoration: none;
+  background     : $light;
+  border-radius  : 1rem;
+  margin         : 1rem 0;
+  padding        : 3rem 1rem .5rem 1rem;
+
+  &:hover {
+
+    background: $dark !important;
+    box-shadow: 0 0.2rem 0.5rem $gold;
+
+
+    img {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.server-img-wrap {
+  display      : flex;
+  border-radius: 0.5rem;
+  margin-top   : -4rem;
+  overflow     : hidden;
+  display      : flex;
+}
+
+.server-icon .server-info {
+  padding-top: .5rem;
+}
+
+#servers img {
+  width: 100%;
+}
+
+#servers h3 {
+  font-size  : 1rem;
+  font-weight: bold;
+}
+
+#servers .server-bio {
+  font-style: italic;
+  margin    : unset;
+}
 
 /* 
 gold - d59140 
