@@ -34,7 +34,7 @@ class User
         return null;
     }
 
-    public function getId(): int
+    public function getID(): string
     {
         return $this->id;
     }
