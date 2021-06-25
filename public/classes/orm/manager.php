@@ -1,5 +1,8 @@
 <?php
 
+include_once __DIR__ . "/models/user.php";
+include_once __DIR__ . "/models/userProfile.php";
+
 // Database manager
 // login info:
 // host: $_SERVER["DB_HOSTNAME"]
