@@ -26,4 +26,16 @@ class DbManager
             die("Could not connect. Error: " . $this->connection->connect_errno . " " . $this->connection->connect_error);
         }
     }
+
+    /**
+     * Makes it possible to make queries towards the DB
+     * Query should be prepared before method is being called
+     * 
+     * @param string $sql
+     * @return mixed
+     */
+    public function query(string $sql)
+    {
+        return $this->dbConn->query($sql);
+    }
 }
