@@ -12,7 +12,7 @@ abstract class HTMLElement
      * HTMLElement constructor.
      * @param string $classPrefix
      */
-    public function __construct(string $classPrefix)
+    public function __construct(string $classPrefix = "")
     {
         $this->classPrefix = $classPrefix;
     }
@@ -30,6 +30,11 @@ abstract class HTMLElement
             return "$this->classPrefix-$class";
         }
         return $class;
+    }
+
+    public function setClassPrefix(string $classPrefix): void
+    {
+        $this->classPrefix = $classPrefix;
     }
 
     /**

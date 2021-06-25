@@ -12,20 +12,20 @@ abstract class Field extends HTMLElement
     public function __construct(
         string $name,
         string $value = "",
-        string $classPrefix = "",
         bool $refillOnFailedPost = true,
         bool $mustValidate = true
     )
     {
-        parent::__construct($classPrefix);
+        parent::__construct();
         $this->name = $name;
         $this->value = $value;
         $this->refillOnFailedPost = $refillOnFailedPost;
         $this->mustValidate = $mustValidate;
     }
 
-    protected function wrapWithSpan(string $htmlNode): string {
-        $prefixedSpanClass = $this->prefixClass($this->name."-text");
+    protected function wrapWithSpan(string $htmlNode): string
+    {
+        $prefixedSpanClass = $this->prefixClass($this->name . "-text");
         return "<span class='$prefixedSpanClass'>$htmlNode</span>";
     }
 
@@ -57,7 +57,8 @@ abstract class Field extends HTMLElement
         return $this->value;
     }
 
-    public function getRefillOnFailedPost(): bool {
+    public function getRefillOnFailedPost(): bool
+    {
         return $this->refillOnFailedPost;
     }
 

@@ -10,20 +10,28 @@ abstract class Form extends HTMLElement
     private string $error;
     private bool $userError;
     private SubmitField $submit;
+    private string $method;
 
-    public function __construct(array $fields, SubmitField $submit, $classPrefix = "")
+    public function __construct(
+        array $fields,
+        SubmitField $submit,
+        string $classPrefix = "",
+        string $method = "POST"
+    )
     {
+        parent::__construct($classPrefix);
         foreach ($fields as $field) {
             if ($field->getRefillOnFailedPost()) {
                 if (isset($_POST[$field->getName()])) {
                     $field->setValue($_POST[$field->getName()]);
                 }
             }
+            $field->setClassPrefix($classPrefix);
         }
 
-        parent::__construct($classPrefix);
         $this->fields = $fields;
         $this->submit = $submit;
+        $this->method = $method;
         $this->error = "";
         $this->userError = false;
     }
@@ -32,7 +40,12 @@ abstract class Form extends HTMLElement
 
     protected function validateFields(): bool
     {
-        foreach ([$this->submit, ...$this->fields] as $field) {
+        if ($error = $this->submit->validateField()) {
+            $this->setError("This was not the form that was submitted.", false);
+            return false;
+        }
+
+        foreach ($this->fields as $field) {
             if ($error = $field->validateField()) {
                 $this->setError($error);
                 return false;
@@ -41,13 +54,46 @@ abstract class Form extends HTMLElement
         return true;
     }
 
-    /**
-     * @param string $error
-     * @param bool $userError
-     */
     protected function setError(string $error, $userError = true): void
     {
         $this->error = $error;
         $this->userError = $userError;
+    }
+
+    private function getError(): string
+    {
+        return trim($this->error, ":");
+    }
+
+    private function errorToHTML(): string
+    {
+        $class = $this->prefixClass("user-error");
+        $error = $this->getError();
+        return "<span class='$class'>$error</span>";
+    }
+
+    public function toHTML(): string
+    {
+        $class = $this->prefixClass("form");
+        $enctype = "application/x-www-form-urlencoded";
+
+        foreach ($this->fields as $field) {
+            if (is_a($field, "FileField")) {
+                $enctype = "multipart/form-data";
+                break;
+            }
+        }
+        $html = "<form enctype='$enctype' method='$this->method' class='$class'>";
+
+        foreach ([...$this->fields, $this->submit] as $field) {
+            $html .= $field->toHTML();
+        }
+
+        if ($this->userError) {
+            $html .= $this->errorToHTML();
+        }
+
+        $html .= "</form>";
+        return $html;
     }
 }
