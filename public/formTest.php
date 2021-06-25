@@ -1,7 +1,6 @@
 <?php
 include_once __DIR__ . "/classes/forms/testForm.php";
 
-
 $form = new TestForm("general");
 
 $result = "";
@@ -22,5 +21,6 @@ if ($form->validateForm()) {
 <body>
 <?= $form->toHTML() ?>
 <p><?= $result ?></p>
+
 </body>
 </html>
