@@ -26,7 +26,7 @@ class UserProfile
         $this->avatar = $avatar;
     }
 
-    public function getId(): string
+    public function getID(): string
     {
         return $this->id;
     }

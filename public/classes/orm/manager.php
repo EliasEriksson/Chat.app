@@ -12,7 +12,7 @@ include_once __DIR__ . "/models/userProfile.php";
 
 class DbManager
 {
-    private $dbConn;
+    private mysqli $dbConn;
 
     function __construct()
     {
@@ -22,8 +22,8 @@ class DbManager
             $_SERVER["DB_PASS"],
             $_SERVER["DB_NAME"]
         );
-        if ($this->connection->connect_errno !== 0) {
-            die("Could not connect. Error: " . $this->connection->connect_errno . " " . $this->connection->connect_error);
+        if ($this->dbConn->connect_errno !== 0) {
+            die("Could not connect. Error: " . $this->dbConn->connect_errno . " " . $this->dbConn->connect_error);
         }
     }
 
