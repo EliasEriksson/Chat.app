@@ -83,11 +83,11 @@ class DbManager
     {
         $id = $user->getID();
         $query = $this->dbConn->prepare(
-            'insert into userProfiles values ($id, ?, ?);'
+            'insert into userProfiles values (?, ?, ?);'
         );
         $username = strip_tags($username);
 
-        if ($query->bind_param("ss", $username, $avatar) && $query->execute()) {
+        if ($query->bind_param("sss", $id, $username, $avatar) && $query->execute()) {
             return new UserProfile($id, $username, $avatar);
         }
         return null;
@@ -107,10 +107,10 @@ class DbManager
         }
 
         $query = $this->dbConn->prepare(
-            "update users set email = ?, passwordHash = ? where id = $id;"
+            "update users set email = ?, passwordHash = ? where id = ?;"
         );
 
-        if ($query->bind_param("ss", $email, $passwordHash) && $query->execute()) {
+        if ($query->bind_param("sss", $email, $passwordHash, $id) && $query->execute()) {
             return new User($id, $email, $passwordHash);
         }
         return null;
@@ -126,11 +126,53 @@ class DbManager
             $avatar = $userProfile->getAvatar();
         }
         $query = $this->dbConn->prepare(
-            "update userProfiles set username = ?, avatar = ? where userID = $id;"
+            "update userProfiles set username = ?, avatar = ? where userID = ?;"
         );
 
-        if ($query->bind_param("ss", $username, $avatar) && $query->execute()) {
+        if ($query->bind_param("sss", $username, $avatar, $id) && $query->execute()) {
             return new UserProfile($id, $username, $avatar);
+        }
+        return null;
+    }
+
+    public function getUser(string $id): ?User
+    {
+        $query = $this->dbConn->prepare(
+            "select * from users where id = ?;"
+        );
+        if ($query->bind_param("s", $id) && $query->execute()) {
+            // if there is a result and the result have rows
+            if (($result = $query->get_result()) && $result->num_rows) {
+                return User::fromAssoc($result->fetch_assoc());
+            }
+        }
+        return null;
+    }
+
+    public function getUserFromEmail(string $email): ?User
+    {
+        $query = $this->dbConn->prepare(
+            "select * from users where email = ?;"
+        );
+        if ($query->bind_param("s", $email) && $query->execute()) {
+            if (($result = $query->get_result()) && $result->num_rows) {
+                return User::fromAssoc($result->fetch_assoc());
+            }
+        }
+        return null;
+    }
+
+    public function getUserProfile(User $user): ?UserProfile
+    {
+        $id = $user->getID();
+        $query = $this->dbConn->prepare(
+            "select * from userProfiles where userID = ?;"
+        );
+
+        if ($query->bind_param("s", $id) && $query->execute()) {
+            if (($result = $query->get_result()) && $result->num_rows) {
+                return UserProfile::fromAssoc($result->fetch_assoc());
+            }
         }
         return null;
     }

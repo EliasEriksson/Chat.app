@@ -10,7 +10,7 @@ class User
     private string $email;
     private string $passwordHash;
 
-    public function fromAssoc(array $userData): User
+    public static function fromAssoc(array $userData): User
     {
         return new User(
             $userData["id"],
