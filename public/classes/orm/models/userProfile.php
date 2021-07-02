@@ -1,7 +1,7 @@
 <?php
 
 
-include_once __DIR__ . "/../manager.php";
+include_once __DIR__ . "/../dbManager.php";
 
 
 class UserProfile

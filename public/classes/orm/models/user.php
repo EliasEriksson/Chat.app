@@ -1,7 +1,7 @@
 <?php
 
 
-include_once __DIR__ . "/../manager.php";
+include_once __DIR__ . "/../dbManager.php";
 
 
 class User
@@ -26,12 +26,12 @@ class User
         $this->passwordHash = $passwordHash;
     }
 
-    public function authenticate(string $password): ?User
+    public function authenticate(string $password): bool
     {
         if (password_verify($password, $this->passwordHash)) {
-            // implement the database manager then finish this
+            return true;
         }
-        return null;
+        return false;
     }
 
     public function getID(): string
