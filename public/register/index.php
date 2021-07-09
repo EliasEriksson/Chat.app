@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body>
 <?= $userRegisterForm->toHTML()?>
 <?php
-echo $_SESSION;
+var_dump($_SESSION);
 ?>
 </body>
 </html>

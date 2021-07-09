@@ -27,9 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body>
 <?= $userLoginForm->toHTML() ?>
 <?= var_dump($_SESSION) ?>
-<?php
-echo $_SESSION["user"]->getEmail();
-?>
+
 </body>
 </html>
 

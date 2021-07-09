@@ -3,27 +3,46 @@
 include_once __DIR__ . "/labeledField.php";
 include_once __DIR__ . "/../../orm/models/user.php";
 include_once __DIR__ . "/../../orm/models/userProfile.php";
+include_once __DIR__ . "/../../../functions/uuid.php";
 
 
 class FileField extends LabeledField
 {
-    private string $uploadDirectory;
+    private string $userID;
+    private string $relativeUploadDirectory;
 
     public function __construct(string $labelText, string $name, User|UserProfile $user, bool $refillOnFailedPost = true, bool $mustValidate = true)
     {
         parent::__construct($labelText, $name, "", $refillOnFailedPost, $mustValidate);
-        $this->uploadDirectory = $_SERVER["DOCUMENT_ROOT"]."/assets/users/".$user->getID();
+        $this->userID = $user->getID();
+        $this->relativeUploadDirectory = "/media/users/" . $user->getID();
 
+    }
+
+    private function moveUploadedFile(string $tmpFileName, string $newFileName): void
+    {
+        if (!is_dir($_SERVER["DOCUMENT_ROOT"] . $this->relativeUploadDirectory)) {
+            mkdir($_SERVER["DOCUMENT_ROOT"] . $this->relativeUploadDirectory, 0775, true);
+        }
+        $relativeFilePath = "$this->relativeUploadDirectory/$newFileName";
+        $localFilePath = $_SERVER["DOCUMENT_ROOT"] . "/$relativeFilePath";
+        move_uploaded_file($tmpFileName, $localFilePath);
     }
 
     public function validateField(): string
     {
-        if ($result = parent::validateField()) {
-            return $result;
+        if ($this->mustValidate) {
+            if (!isset($_FILES[$this->name])) {
+                return ucfirst("$this->labelText is missing in your request please resubmit.");
+            } elseif (!($_FILES[$this->name])) {
+                return ucfirst("$this->labelText can not be left empty.");
+            }
         }
-        // TODO move the file to user uploaded files here
-        return  ;
+
+        $this->moveUploadedFile($_FILES[$this->name]["tmp_name"], uuid());
+        return "";
     }
+
 
     public function toHTML(): string
     {

@@ -7,12 +7,21 @@ include_once __DIR__ . "/fields/submitField.php";
 include_once __DIR__ . "/fields/fileField.php";
 
 
-class FiledUploadForm extends Form
+class FileUploadForm extends Form
 {
     public function __construct(User|UserProfile $user, string $classPrefix = "")
     {
         parent::__construct([
-            new FileField("The label: ", "the-file", $user),
-        ], new SubmitField("file-upload-form", "Submit"), $classPrefix);
+            new FileField("File label:", "file-name", $user),
+        ], new SubmitField("file-upload-form", "submit"), $classPrefix);
+    }
+
+    public function validateForm(): ?object
+    {
+        echo "FiledUploadForm::validateForm()<br> ";
+        if (!$this->validateFields()) {
+            return null;
+        }
+        return $this;
     }
 }

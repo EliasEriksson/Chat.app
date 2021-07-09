@@ -2,26 +2,28 @@
 
 include_once __DIR__ . "/../classes/orm/models/user.php";
 include_once __DIR__ . "/../classes/orm/models/userProfile.php";
+include_once __DIR__ . "/url.php";
 
-function requireUserLogin(): void
+
+function requireUserLogin(string $redirect = "/login/"): void
 {
-    # TODO finish implementation when config file is done
-    if (!isset($_SESSION["user"])) {
-
+        if (!isset($_SESSION["user"])) {
+        redirect($redirect);
     }
-
 }
+
+
+function getSessionUser(string $redirect = "/login/"): User
+{
+    requireUserLogin($redirect);
+    return $_SESSION["user"];
+}
+
 
 function requireUserProfileLogin(): void
 {
     requireUserLogin();
     # TODO implement the rest after config file is done
-}
-
-function getSessionUser(): User
-{
-    requireUserLogin();
-    return $_SESSION["user"];
 }
 
 function getSessionUserProfile(): UserProfile
@@ -32,10 +34,16 @@ function getSessionUserProfile(): UserProfile
 
 function userLoggedIn(): bool
 {
-
+    if ($_SESSION["user"]) {
+        return true;
+    }
+    return false;
 }
 
 function userProfileLoggedIn(): bool
 {
-
+    if ($_SESSION["userProfile"]) {
+        return true;
+    }
+    return false;
 }

@@ -1,8 +1,26 @@
 <?php
-include_once __DIR__ . "/classes/forms/testForm.php";
+error_reporting(-1);
+ini_set("display_errors", 1);
 
-//echo phpinfo();
-?>
+include_once __DIR__ . "/classes/forms/testForm.php";
+include_once __DIR__ . "/functions/session.php";
+include_once __DIR__ . "/classes/forms/fileUploadForm.php";
+
+
+session_start();
+
+echo "POST:"; echo var_dump($_POST)."<br>br>FILES:";
+echo var_dump($_FILES)."<br><br>";
+
+$user = getSessionUser();
+$fileUploadForm = new FileUploadForm($user);
+
+$result = false;
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if ($fileUploadForm->validateForm()) {
+        $result = true;
+    }
+} ?>
 
 
 <!doctype html>
@@ -15,9 +33,11 @@ include_once __DIR__ . "/classes/forms/testForm.php";
     <title>Document</title>
 </head>
 <body>
-<form method="POST" enctype="multipart/form-data">
-    <input type="file" name="the-file" value="test">
-    <input type="submit" name="submit" value="submit">
-</form>
+<?= $fileUploadForm->toHTML()?>
+<?php
+if ($result) {
+    echo "successfully validated";
+}
+?>
 </body>
 </html>
