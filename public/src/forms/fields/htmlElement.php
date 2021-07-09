@@ -2,7 +2,7 @@
 
 /**
  * Class HTMLElement
- * @property string $classPrefix prefix for the classes used by the element
+ * @property string $classPrefix prefix for the src used by the element
  */
 abstract class HTMLElement
 {

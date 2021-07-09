@@ -1,7 +1,7 @@
 <?php
 
-include_once __DIR__ . "/../classes/orm/models/user.php";
-include_once __DIR__ . "/../classes/orm/models/userProfile.php";
+include_once __DIR__ . "/../src/orm/models/user.php";
+include_once __DIR__ . "/../src/orm/models/userProfile.php";
 include_once __DIR__ . "/url.php";
 
 

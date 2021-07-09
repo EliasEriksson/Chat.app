@@ -2,9 +2,9 @@
 error_reporting(-1);
 ini_set("display_errors", 1);
 
-include_once __DIR__ . "/classes/forms/registerUserProfile.php";
-include_once __DIR__ . "/functions/session.php";
-include_once __DIR__ . "/classes/forms/fileUploadForm.php";
+include_once __DIR__ . "/src/forms/registerUserProfileForm.php";
+include_once __DIR__ . "/src/session.php";
+include_once __DIR__ . "/src/forms/fileUploadForm.php";
 
 
 session_start();

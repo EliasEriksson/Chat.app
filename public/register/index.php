@@ -4,7 +4,7 @@ error_reporting(-1);
 ini_set("display_errors", 1);
 
 
-include_once __DIR__ . "/../classes/forms/userRegisterForm.php";
+include_once __DIR__ . "/../src/forms/userRegisterForm.php";
 include_once __DIR__ . "/../functions/url.php";
 
 
