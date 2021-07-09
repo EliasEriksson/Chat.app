@@ -2,25 +2,26 @@
 error_reporting(-1);
 ini_set("display_errors", 1);
 
-include_once __DIR__ . "/classes/forms/testForm.php";
+include_once __DIR__ . "/classes/forms/registerUserProfile.php";
 include_once __DIR__ . "/functions/session.php";
 include_once __DIR__ . "/classes/forms/fileUploadForm.php";
 
 
 session_start();
 
-echo "POST:"; echo var_dump($_POST)."<br>br>FILES:";
+echo "POST:"; echo var_dump($_POST)."<br><br>FILES:";
 echo var_dump($_FILES)."<br><br>";
 
 $user = getSessionUser();
-$fileUploadForm = new FileUploadForm($user);
+$userProfileForm = new RegisterUserProfileForm($user);
 
 $result = false;
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if ($fileUploadForm->validateForm()) {
+    if ($userProfileForm->validateForm()) {
         $result = true;
     }
-} ?>
+}
+?>
 
 
 <!doctype html>
@@ -33,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <title>Document</title>
 </head>
 <body>
-<?= $fileUploadForm->toHTML()?>
+<?= $userProfileForm->toHTML()?>
 <?php
 if ($result) {
     echo "successfully validated";

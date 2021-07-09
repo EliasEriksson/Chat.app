@@ -18,7 +18,7 @@ create table userProfiles (
     username varchar(255),
     avatar varchar(511),
 
-#     constraint userProfilesAvatar check (  ) # add check later when decision on relative vs absolute paths have been made
+    constraint userProfilesAvatar check ( '^media/users/' ),
     constraint userProfilesPK primary key ( userID )
 );
 

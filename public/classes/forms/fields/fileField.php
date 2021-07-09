@@ -8,13 +8,11 @@ include_once __DIR__ . "/../../../functions/uuid.php";
 
 class FileField extends LabeledField
 {
-    private string $userID;
     private string $relativeUploadDirectory;
 
     public function __construct(string $labelText, string $name, User|UserProfile $user, bool $refillOnFailedPost = true, bool $mustValidate = true)
     {
         parent::__construct($labelText, $name, "", $refillOnFailedPost, $mustValidate);
-        $this->userID = $user->getID();
         $this->relativeUploadDirectory = "/media/users/" . $user->getID();
 
     }
