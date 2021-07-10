@@ -46,6 +46,7 @@ class RegisterUserProfileForm extends Form
         }
 
         if ($userProfile = $dbManager->createUserProfile($this->user, $_POST["username"], $relativeFilePath)) {
+            $_SESSION["userProfile"] = $userProfile;
             return $userProfile;
         }
 
