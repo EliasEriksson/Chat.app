@@ -34,7 +34,7 @@ function getSessionUserProfile(): UserProfile
 
 function userLoggedIn(): bool
 {
-    if ($_SESSION["user"]) {
+    if (isset($_SESSION["user"])) {
         return true;
     }
     return false;
@@ -42,7 +42,7 @@ function userLoggedIn(): bool
 
 function userProfileLoggedIn(): bool
 {
-    if ($_SESSION["userProfile"]) {
+    if (isset($_SESSION["userProfile"])) {
         return true;
     }
     return false;

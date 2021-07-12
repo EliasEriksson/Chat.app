@@ -15,13 +15,17 @@ function scanDirectory(string $path): array
 
 function getLatestUploadedFile(string $userID): string
 {
-
     $bestTime = 0;
     $bestFile = "";
-    $dir = $_SERVER["DOCUMENT_ROOT"] . "/media/users/" . $userID;
+    $dir = $_SERVER["DOCUMENT_ROOT"] . "/media/users/$userID";
     foreach (scanDirectory($dir) as $file) {
-        if (filemtime($file) > $bestTime) {
-
+        if (($currentTime = filemtime("$dir/$file")) > $bestTime) {
+            $bestTime = $currentTime;
+            $bestFile = $file;
         }
     }
+    if ($bestFile) {
+        return "media/users/$userID/$bestFile";
+    }
+    return "";
 }

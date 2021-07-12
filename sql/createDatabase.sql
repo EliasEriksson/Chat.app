@@ -16,9 +16,9 @@ create table users
 create table userProfiles (
     userID char(36) unique not null,
     username varchar(255),
-    avatar varchar(511),
+    avatar varchar(511) default 'media/assets/defaultAvatar.png',
 
-    constraint userProfilesAvatar check ( avatar regexp '^media/users/' ),
+    constraint userProfilesAvatar check ( avatar rlike '(^media/users/)|(^media/assets/defaultAvatar.png$)' ),
     constraint userProfilesPK primary key ( userID )
 );
 

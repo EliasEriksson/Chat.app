@@ -9,7 +9,7 @@ include_once __DIR__ . "/../orm/models/user.php";
 include_once __DIR__ . "/../orm/models/userProfile.php";
 
 
-class RegisterUserProfileForm extends Form
+class UserProfileRegisterForm extends Form
 {
     private User $user;
 
@@ -25,23 +25,16 @@ class RegisterUserProfileForm extends Form
     public function validateForm(DbManager $dbManager = null): ?object
     {
         if (!$this->validateFields()) {
-            echo "faield to validate";
             return null;
         }
-        # TODO default avatar (deal with mustValidate: false)
 
-        // since this is the creation of the profile there should only be one file in in the directory
-        // for this users specific uploads
-        $relativeUserDirectory = "media/users/" . $this->user->getID();
-
-        $userUploadedFiles = scanDirectory($relativeUserDirectory);
-
-        $relativeFilePath = "$relativeUserDirectory" . "/" . $userUploadedFiles[0];
+        if (!($relativeFilePath = getLatestUploadedFile($this->user->getID()))) {
+            $relativeFilePath = "media/assets/defaultAvatar.png";
+        }
 
         if (!$dbManager) {
             $dbManager = new DbManager();
         }
-        echo $relativeFilePath;
         if ($userProfile = $dbManager->createUserProfile($this->user, $_POST["username"], $relativeFilePath)) {
             $_SESSION["userProfile"] = $userProfile;
             return $userProfile;

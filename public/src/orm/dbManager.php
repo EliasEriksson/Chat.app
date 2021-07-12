@@ -1,5 +1,6 @@
 <?php
 
+include_once __DIR__ . "/../uuid.php";
 include_once __DIR__ . "/models/user.php";
 include_once __DIR__ . "/models/userProfile.php";
 
@@ -59,15 +60,16 @@ class DbManager
     public function createUser(string $email, string $password, int $failedRetries = 0): ?User
     {
         $query = $this->dbConn->prepare(
-            "insert into users values (default, ?, ?);"
+            "insert into users values (?, ?, ?);"
         );
+        $uuid = uuid();
         $email = strip_tags($email);
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
         // binds 2 string parameters to the prepared SQL statement and
         // executes it the parameters was bound successfully
-        if ($query->bind_param("ss", $email, $passwordHash) && $query->execute()) {
-            return new User($this->dbConn->insert_id, $email, $passwordHash);
+        if ($query->bind_param("sss", $uuid, $email, $passwordHash) && $query->execute()) {
+            return new User($uuid, $email, $passwordHash);
         }
 
         // checks if the error from above was a duplicate for the table key `id`
@@ -82,6 +84,9 @@ class DbManager
     public function createUserProfile(User $user, string $username, string $avatar): ?UserProfile
     {
         $id = $user->getID();
+        if (!$avatar) {
+            $avatar = "media/assets/defaultAvatar.png";
+        }
         $query = $this->dbConn->prepare(
             'insert into userProfiles values (?, ?, ?);'
         );
@@ -189,5 +194,3 @@ class DbManager
         return $this->dbConn->query($sql);
     }
 }
-
-

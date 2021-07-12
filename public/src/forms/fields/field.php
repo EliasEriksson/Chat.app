@@ -69,4 +69,13 @@ abstract class Field extends HTMLElement
     {
         $this->value = $value;
     }
+
+    public function refillValue(): void
+    {
+        if ($this->refillOnFailedPost) {
+            if (isset($_POST[$this->name])) {
+                $this->value = $_POST[$this->name];
+            }
+        }
+    }
 }

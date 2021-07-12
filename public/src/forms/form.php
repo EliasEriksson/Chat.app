@@ -21,11 +21,7 @@ abstract class Form extends HTMLElement
     {
         parent::__construct($classPrefix);
         foreach ($fields as $field) {
-            if ($field->getRefillOnFailedPost()) {
-                if (isset($_POST[$field->getName()])) {
-                    $field->setValue($_POST[$field->getName()]);
-                }
-            }
+            $field->refillValue();
             $field->setClassPrefix($classPrefix);
         }
 

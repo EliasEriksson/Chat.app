@@ -3,16 +3,16 @@
 include_once __DIR__ . "/labeledField.php";
 include_once __DIR__ . "/../../orm/models/user.php";
 include_once __DIR__ . "/../../orm/models/userProfile.php";
-include_once __DIR__ . "/../../../functions/uuid.php";
+include_once __DIR__ . "/../../../src/uuid.php";
 
 
 class FileField extends LabeledField
 {
     private string $relativeUploadDirectory;
 
-    public function __construct(string $labelText, string $name, User|UserProfile $user, bool $refillOnFailedPost = true, bool $mustValidate = true)
+    public function __construct(string $labelText, string $name, User|UserProfile $user, bool $mustValidate = true)
     {
-        parent::__construct($labelText, $name, "", $refillOnFailedPost, $mustValidate);
+        parent::__construct($labelText, $name, "", false, $mustValidate);
         $this->relativeUploadDirectory = "/media/users/" . $user->getID();
 
     }
@@ -25,6 +25,7 @@ class FileField extends LabeledField
         $relativeFilePath = "$this->relativeUploadDirectory/$newFileName";
         $localFilePath = $_SERVER["DOCUMENT_ROOT"] . "/$relativeFilePath";
         move_uploaded_file($tmpFileName, $localFilePath);
+        chmod($localFilePath, 775);
     }
 
     public function validateField(): string

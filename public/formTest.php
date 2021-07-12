@@ -3,11 +3,11 @@ error_reporting(-1);
 ini_set("display_errors", 1);
 
 include_once __DIR__ . "/src/session.php";
-include_once __DIR__ . "/src/forms/registerUserProfileForm.php";
+include_once __DIR__ . "/src/forms/userProfileRegisterForm.php";
 session_start();
 
 $user = getSessionUser();
-$form = new RegisterUserProfileForm($user, "general");
+$form = new UserProfileRegisterForm($user, "general");
 
 $success = false;
 if ($_SERVER["REQUEST_METHOD"] === "POST") {

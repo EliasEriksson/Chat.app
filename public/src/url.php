@@ -1,11 +1,13 @@
 <?php
 
+
 /**
  * header is a bad name i like redirect more
  *
- * @param $url
+ * @param string $url
+ * @link string $url
  */
-function redirect($url)
+function redirect(string $url)
 {
     header("location: $url");
 }
