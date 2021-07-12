@@ -2,6 +2,13 @@
 include_once __DIR__ . "/orm/models/user.php";
 include_once __DIR__ . "/orm/models/userProfile.php";
 
+/**
+ * wrapper around php default scandir() function.
+ * this function removes the . and .. directory from the result.
+ *
+ * @param string $path
+ * @return array
+ */
 function scanDirectory(string $path): array
 {
     $files = scandir($path);
@@ -13,6 +20,14 @@ function scanDirectory(string $path): array
     return $files;
 }
 
+/**
+ * get the latest modified file in a directory.
+ *
+ * the returned filepath is relative to the web/filesystem root.
+ *
+ * @param string $userID
+ * @return string
+ */
 function getLatestUploadedFile(string $userID): string
 {
     $bestTime = 0;
