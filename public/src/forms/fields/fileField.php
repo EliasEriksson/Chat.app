@@ -4,6 +4,7 @@ include_once __DIR__ . "/labeledField.php";
 include_once __DIR__ . "/../../orm/models/user.php";
 include_once __DIR__ . "/../../orm/models/userProfile.php";
 include_once __DIR__ . "/../../../src/uuid.php";
+include_once __DIR__ . "/../../mime.php";
 
 
 
@@ -12,19 +13,19 @@ include_once __DIR__ . "/../../../src/uuid.php";
 class FileField extends LabeledField
 {
     private string $relativeUploadDirectory;
-    private array $allowedMIME;
+    private int $allowedMIME;
 
     public function __construct(
         string $labelText,
         string $name,
         User|UserProfile $user,
-        array $allowedMIME,
+        int $allowedMIME,
         bool $mustValidate = true
     )
     {
         parent::__construct($labelText, $name, "", false, $mustValidate);
         $this->relativeUploadDirectory = "/media/users/" . $user->getID();
-
+        $this->allowedMIME = $allowedMIME;
     }
 
     private function moveUploadedFile(string $tmpFileName, string $newFileName): void

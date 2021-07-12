@@ -9,7 +9,7 @@ class MIME {
     const GIF = 4;
     const SVG = 8;
 
-    public static function allowedMIMEs(int $mimes): array {
+    public static function intToArray(int $mimes): array {
         $allowedMimes = [];
         if (($mimes & MIME::JPEG) > 0) {
             array_push($allowedMimes, "image/jpeg");
@@ -26,7 +26,15 @@ class MIME {
         return $allowedMimes;
     }
 
-    public static function mimeExtension(int $mime): string {
+    public static function arrayToInt() {
+
+    }
+
+    public function mimeToExtension() {
+
+    }
+
+    public static function intToExtension(int $mime): string {
         return match ($mime) {
             1 => ".jpg",
             2 => ".png",
@@ -36,5 +44,17 @@ class MIME {
         };
     }
 }
-$mimes = MIME::allowedMIMEs(MIME::PNG|MIME::SVG);
-var_dump($mimes);
+
+function foo(int $a) {
+    $mimes = MIME::intToArray($a);
+    var_dump($mimes);
+}
+
+function mimeExample() {
+    # mimes are passed as arguments into some function that requires them.
+    # the function (foo) can then use the the MIME static methods to get
+    # a list if MIMEs and convert the MIMEs to extensions.
+    foo(MIME::SVG|MIME::PNG);
+    MIME::intToArray(MIME::PNG|MIME::SVG);
+}
+

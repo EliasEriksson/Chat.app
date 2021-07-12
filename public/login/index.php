@@ -35,5 +35,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <?= $userLoginForm->toHTML() ?>
 </body>
 </html>
-
-

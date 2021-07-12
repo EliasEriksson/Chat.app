@@ -7,7 +7,7 @@ include_once __DIR__ . "/fields/submitField.php";
 include_once __DIR__ . "/../orm/dbManager.php";
 include_once __DIR__ . "/../orm/models/user.php";
 include_once __DIR__ . "/../orm/models/userProfile.php";
-
+include_once __DIR__ . "/../mime.php";
 
 class UserProfileRegisterForm extends Form
 {
@@ -17,7 +17,7 @@ class UserProfileRegisterForm extends Form
     {
         parent::__construct([
             new TextField("Username:", "username"),
-            new FileField("Avatar:", "avatar", $user, mustValidate: false)
+            new FileField("Avatar:", "avatar", $user, MIME::PNG|MIME::JPEG|MIME::SVG)
         ], new SubmitField("register-user-profile", "Submit"), $classPrefix);
         $this->user = $user;
     }
