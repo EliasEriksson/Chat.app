@@ -1,4 +1,5 @@
 <?php
+include_once __DIR__ . "/../files.php";
 include_once __DIR__ . "/form.php";
 include_once __DIR__ . "/fields/textField.php";
 include_once __DIR__ . "/fields/fileField.php";
@@ -24,6 +25,7 @@ class RegisterUserProfileForm extends Form
     public function validateForm(DbManager $dbManager = null): ?object
     {
         if (!$this->validateFields()) {
+            echo "faield to validate";
             return null;
         }
         # TODO default avatar (deal with mustValidate: false)
@@ -32,24 +34,18 @@ class RegisterUserProfileForm extends Form
         // for this users specific uploads
         $relativeUserDirectory = "media/users/" . $this->user->getID();
 
-        $userUploadedFiles = scandir($relativeUserDirectory);
-        foreach ([".", ".."] as $file) {
-            if (!($index = array_search($file, $userUploadedFiles))) {
-                array_splice($userUploadedFiles, $index, 1);
-            }
-        }
+        $userUploadedFiles = scanDirectory($relativeUserDirectory);
 
         $relativeFilePath = "$relativeUserDirectory" . "/" . $userUploadedFiles[0];
 
         if (!$dbManager) {
             $dbManager = new DbManager();
         }
-
+        echo $relativeFilePath;
         if ($userProfile = $dbManager->createUserProfile($this->user, $_POST["username"], $relativeFilePath)) {
             $_SESSION["userProfile"] = $userProfile;
             return $userProfile;
         }
-
         return null;
     }
 }

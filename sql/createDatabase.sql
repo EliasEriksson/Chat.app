@@ -18,7 +18,7 @@ create table userProfiles (
     username varchar(255),
     avatar varchar(511),
 
-    constraint userProfilesAvatar check ( '^media/users/' ),
+    constraint userProfilesAvatar check ( avatar regexp '^media/users/' ),
     constraint userProfilesPK primary key ( userID )
 );
 
