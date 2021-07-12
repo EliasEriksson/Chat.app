@@ -6,11 +6,21 @@ include_once __DIR__ . "/../../orm/models/userProfile.php";
 include_once __DIR__ . "/../../../src/uuid.php";
 
 
+
+
+
 class FileField extends LabeledField
 {
     private string $relativeUploadDirectory;
+    private array $allowedMIME;
 
-    public function __construct(string $labelText, string $name, User|UserProfile $user, bool $mustValidate = true)
+    public function __construct(
+        string $labelText,
+        string $name,
+        User|UserProfile $user,
+        array $allowedMIME,
+        bool $mustValidate = true
+    )
     {
         parent::__construct($labelText, $name, "", false, $mustValidate);
         $this->relativeUploadDirectory = "/media/users/" . $user->getID();

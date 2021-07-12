@@ -6,15 +6,12 @@ include_once __DIR__ . "/src/session.php";
 include_once __DIR__ . "/src/forms/userProfileRegisterForm.php";
 session_start();
 
-$user = getSessionUser();
-$form = new UserProfileRegisterForm($user, "general");
-
-$success = false;
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if ($form->validateForm()) {
-        $success = true;
-    }
+    $type = mime_content_type($_FILES["file"]["tmp_name"]);
+    echo $_FILES["file"]["type"] . "<br>";
+    echo "$type";
 }
+
 ?>
 
 
@@ -28,13 +25,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <title>Document</title>
 </head>
 <body>
-<?= $form->toHTML() ?>
-<?php
-if ($success) {
-    echo "<p>Success!</p>";
-} else {
-    echo "<p>Failure</p>";
-}
-?>
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="submit" name="file-form">
+</form>
 </body>
 </html>
