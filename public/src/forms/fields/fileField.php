@@ -20,13 +20,14 @@ class FileField extends LabeledField
 
     private function moveUploadedFile(string $tmpFileName, string $newFileName): bool
     {
-        if (MIME::mimeIsAllowed($this->allowedMIMEs, mime_content_type($tmpFileName))) {
+        if ($extension = MIME::mimeIsAllowed($this->allowedMIMEs, mime_content_type($tmpFileName))) {
+            $newFileName .= $extension;
+            $relativeFilePath = "$this->relativeUploadDirectory/$newFileName";
+            $localFilePath = $_SERVER["DOCUMENT_ROOT"] . "/$relativeFilePath";
+
             if (!is_dir($_SERVER["DOCUMENT_ROOT"] . $this->relativeUploadDirectory)) {
                 mkdir($_SERVER["DOCUMENT_ROOT"] . $this->relativeUploadDirectory, 0775, true);
             }
-
-            $relativeFilePath = "$this->relativeUploadDirectory/$newFileName";
-            $localFilePath = $_SERVER["DOCUMENT_ROOT"] . "/$relativeFilePath";
 
             move_uploaded_file($tmpFileName, $localFilePath);
             chmod($localFilePath, 775);
