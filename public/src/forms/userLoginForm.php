@@ -33,7 +33,7 @@ class UserLoginForm extends Form
                 $_SESSION["user"] = $user;
                 return $user;
             } else {
-                $this->setError("Passwords Does not patch.");
+                $this->setError("Passwords Does not match.");
             }
         }
 
