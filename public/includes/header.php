@@ -1,3 +1,5 @@
+<?php include_once __DIR__ . "/../config.php" ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat.app</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="<?= $rootURL ?>css/style.css">
 </head>
 
 
@@ -17,8 +19,8 @@
         <nav>
             <a href="rooms.php">rooms</a>
             <a href="about.php">about</a>
-            <a href="signup.php" class="button button-outline">sign up</a>
-            <a href="login.php" class="button">sign in</a>
+            <a href="register" class="button button-outline">sign up</a>
+            <a href="login" class="button">login</a>
         </nav>
 
     </header>
