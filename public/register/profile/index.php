@@ -6,7 +6,6 @@ include_once __DIR__ . "/../../src/url.php";
 include_once __DIR__ . "/../../src/session.php";
 include_once __DIR__ . "/../../src/forms/userProfileRegisterForm.php";
 session_start();
-var_dump($_SESSION);
 
 if (userProfileLoggedIn()) {
     redirect("../..");
