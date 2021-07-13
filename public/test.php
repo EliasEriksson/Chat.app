@@ -25,6 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <title>Document</title>
 </head>
 <body>
+
 <form method="post" enctype="multipart/form-data">
     <input type="file" name="file">
     <input type="submit" name="file-form">

@@ -9,35 +9,29 @@
 
     <div id="main-container">
 
-        <div id="app">
+        <div class="client" id="client">
 
-            <section>
-                <h2>Your servers</h2>
+            <div class="servers" id="servers">
+                <a href="#" class="">
+                    <section>
+                        <div class="">
+                        </div>
+                        <div class="server-info">
+                            <h3>SERVER NAME</h3>
+                            <span>69/420 users</span>
+                        </div>
+                    </section>
+                </a>
+                <ul>
+                    <li>
+                        <img src="https://source.unsplash.com/random/200x200" alt="SERVER_NAME">
+                        <h3>Servernamn</h3>
+                        <span>69/420 users</span>
+                    </li>
+                </ul>
 
-                <div class="auto-grid" id="servers">
-                    <a href="#" class="server-icon">
-                        <section>
-                            <div class="server-img-wrap">
-                                <img src="https://source.unsplash.com/random/200x200" alt="SERVER_NAME">
-                            </div>
-                            <div class="server-info">
-                                <h3>SERVER NAME</h3>
-                                <span>69/420 users</span>
-                            </div>
-                        </section>
-                    </a>
-                    <a href="#" class="server-icon">
-                        <section>
-                            <div class="server-img-wrap">
-                                <img src="https://source.unsplash.com/random/200x200" alt="SERVER_NAME">
-                            </div>
-                            <div class="server-info">
-                                <h3>SERVER NAME</h3>
-                                <span>69/420 users</span>
-                            </div>
-                        </section>
-                    </a>
-                </div>
+            </div>
+
 
             </section>
 

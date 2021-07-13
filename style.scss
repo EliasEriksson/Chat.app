@@ -214,6 +214,13 @@ p {
   margin: auto;
 }
 
+.client {
+  display              : grid;
+  grid-template-columns: minmax(100px, 250px) auto 200px;
+  background           : #000c;
+  border-radius        : 1rem;
+}
+
 #servers {
   display              : grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 250px));
