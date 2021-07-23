@@ -30,6 +30,7 @@ class UserLoginForm extends Form
 
         if ($user = $dbManager->getUserFromEmail($_POST["email"])) {
             if ($user->authenticate($_POST["password"])) {
+                $dbManager->updateSession($user);
                 $_SESSION["user"] = $user;
                 return $user;
             } else {

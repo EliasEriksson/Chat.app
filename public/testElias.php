@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     header("location: ./testElias.php");
 }
-
+var_dump($_SESSION);
 echo session_id() . "<br>";
 ?>
 <!doctype html>

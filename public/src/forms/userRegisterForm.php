@@ -34,6 +34,7 @@ class UserRegisterForm extends Form
         }
 
         if ($user = $dbManager->createUser($_POST["email"], $_POST["password1"])) {
+            $dbManager->updateSession($user);
             $_SESSION["user"] = $user;
             return $user;
         }

@@ -1,4 +1,4 @@
 *.map
 node_modules/*
 package-lock.json
-**/.crecentials.json
+**/.credentials.json

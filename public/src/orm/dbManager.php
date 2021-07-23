@@ -182,6 +182,20 @@ class DbManager
         return null;
     }
 
+    public function updateSession(User $user): bool
+    {
+        session_regenerate_id();
+        $id = $user->getID();
+        $sessionID = session_id();
+        $query = $this->dbConn->prepare(
+            "insert into sessions (userID, sessionID) values (?, ?) on duplicate key update sessionID = ?;"
+        );
+        if ($query->bind_param("sss", $id, $sessionID, $sessionID) && $query->execute()) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Makes it possible to make queries towards the DB
      * Query should be prepared before method is being called
