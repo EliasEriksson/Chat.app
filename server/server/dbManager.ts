@@ -1,8 +1,12 @@
-import {
-    DataTypes, Database, Model, MySQLConnector, MySQLOptions
-} from 'https://deno.land/x/denodb/mod.ts';
+import { Client } from "https://deno.land/x/mysql/mod.ts";
 
-const credentials: MySQLOptions = JSON.parse(await Deno.readTextFile(".credentials.json"));
-const connection = new MySQLConnector(credentials);
-const db = new Database(connection);
+const credentials = JSON.parse(await Deno.readTextFile(".credentials.json"));
+
+const client = await new Client().connect({
+    "hostname": credentials["DB_HOSTNAME"],
+    "username": credentials["DB_USER"],
+    "password": credentials["DB_PASS"],
+    "db": credentials["DB_NAME"]
+});
+console.log(client)
 
