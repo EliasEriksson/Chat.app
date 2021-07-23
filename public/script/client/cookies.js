@@ -1,4 +1,4 @@
-function getSessionID() {
+export function getSessionID() {
     let cookies = document.cookie;
     let cookieName, cookieValue;
     for (let cookie of cookies.split(";")) {
@@ -9,6 +9,3 @@ function getSessionID() {
     }
     return "";
 }
-
-console.log(document.cookie);
-console.log(getSessionID());
