@@ -1,4 +1,6 @@
-import { getSessionID} from "./cookies.js";
+import {
+    getSessionID
+} from "./cookies.js";
 
 
 export class Client {

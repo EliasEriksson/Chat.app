@@ -1,4 +1,9 @@
-import {Client} from "./client/client.js";
+import {
+    Client
+} from "./client/client.js";
+import {
+    getSessionID
+} from "./client/cookies.js";
 
 let [subDomain, domain, topDomain] = document.location.hostname.split(".");
 let url;
@@ -13,8 +18,7 @@ if (!topDomain) {
 async function main() {
     const client = new Client(url);
     await client.open();
-
-
+    await client.send(getSessionID());
 }
 
 window.addEventListener("load", main);

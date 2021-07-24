@@ -196,15 +196,14 @@ class DbManager
         return false;
     }
 
-    /**
-     * Makes it possible to make queries towards the DB
-     * Query should be prepared before method is being called
-     *
-     * @param string $sql
-     * @return mixed
-     */
-    public function query(string $sql)
-    {
-        return $this->dbConn->query($sql);
+    public function deleteSession(User $user): bool {
+        $id = $user->getID();
+        $query = $this->dbConn->prepare(
+            "delete from sessions where userID = ?;"
+        );
+        if ($query->bind_param("s", $id) && $query->execute()) {
+            return true;
+        }
+        return false;
     }
 }

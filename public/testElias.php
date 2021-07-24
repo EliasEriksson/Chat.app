@@ -26,8 +26,6 @@ echo session_id() . "<br>";
 <form method="post" enctype="application/x-www-form-urlencoded">
     <input type="submit" name="destroy-session" value="destroy">
 </form>
-<script src="/script/client/cookies.js"></script>
-<script type="module" src="/script/chat.client.js">
-</script>
+<script type="module" src="/script/client/main.js"></script>
 </body>
 </html>
