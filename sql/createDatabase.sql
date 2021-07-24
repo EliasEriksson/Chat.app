@@ -31,6 +31,45 @@ create table sessions
     constraint sessionsPK primary key (userID)
 );
 
+create table rooms
+(
+    id char(36) unique not null,
+    name varchar(255),
+
+    constraint roomPK primary key (id)
+);
+
+create table members
+(
+    id char(36) unique not null,
+    userID char(36) unique not null,
+    roomID char(36) unique not null,
+
+    constraint membersPK primary key (id)
+);
+
+create table messages
+(
+    id char(36) unique not null,
+    userID char(36) unique not null,
+    roomID char(36) unique not null,
+    postDate timestamp default current_timestamp,
+    content text,
+
+    constraint messagesID primary key (id)
+);
+
+create table oldMessages
+(
+    id char(36) unique not null,
+    userID char(36) unique not null,
+    roomID char(36) unique not null,
+    postDate timestamp default current_timestamp,
+    content text,
+
+    constraint messagesID primary key (id)
+);
+
 alter table userProfiles
     add constraint userProfilesUserFK
         foreign key (userID)
@@ -40,3 +79,15 @@ alter table sessions
     add constraint sessionsUserFK
         foreign key (userID)
             references users (id);
+
+alter table members add constraint membersUserFK foreign key (userID) references users (id);
+
+alter table members add constraint membersRoomFK foreign key (roomID) references rooms (id);
+
+alter table messages add constraint messagesUserFK foreign key (userID) references users (id);
+
+alter table messages add constraint messagesRoomFK foreign key (roomID) references rooms (id);
+
+alter table oldMessages add constraint oldMessagesUserFK foreign key (userID) references users (id);
+
+alter table oldMessages add constraint oldMessagesRoomFK foreign key (roomID) references rooms (id);
