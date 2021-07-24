@@ -4,11 +4,20 @@ import {
 
 
 export class Client {
-    constructor(url) {
+    constructor() {
+        let [subDomain, domain, topDomain] = document.location.hostname.split(".");
+        let url;
+        if (!topDomain) {
+            // no top level domain. probably localhost
+            url = `ws://connect.${domain}`;
+        } else {
+            topDomain = topDomain.split("/")[0];
+            url = `ws://connect.${domain}.${topDomain}`;
+        }
         this.socket = new WebSocket(url);
     }
 
-    async open() {
+    open = () => {
         return new Promise((resolve => {
             this.socket.addEventListener("open", (event) => {
                 resolve(event);
@@ -16,17 +25,17 @@ export class Client {
         }));
     }
 
-    async authenticate() {
+    authenticate = async () => {
         await this.send(getSessionID());
 
     }
 
-    async send(data) {
+    send = async(data) => {
         this.socket.send(data);
         console.log(`sent: ${data}`);
     }
 
-    async receive() {
+    receive = async() => {
         return new Promise((resolve => {
             this.socket.addEventListener("message", (message) => {
                 resolve(message);
