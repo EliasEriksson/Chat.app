@@ -1,19 +1,18 @@
 <?php
 
-
 include_once __DIR__ . "/../dbManager.php";
 
 
-class Room
+class PublicRoom
 {
     private string $id;
     private string $name;
 
-    public static function fromAssoc(array $roomData): Room
+    public static function fromAssoc(array $roomData): PublicRoom
     {
-        return new Room(
+        return new PublicRoom(
             $roomData["id"],
-            $roomData["name"]
+            $roomData["name"],
         );
     }
 
