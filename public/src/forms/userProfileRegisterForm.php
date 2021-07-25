@@ -17,7 +17,7 @@ class UserProfileRegisterForm extends Form
     {
         parent::__construct([
             new TextField("Username:", "username"),
-            new FileField("Avatar:", "avatar", $user, MIME::PNG|MIME::JPEG|MIME::SVG)
+            new FileField("Avatar:", "avatar", $user, MIME::PNG|MIME::JPEG|MIME::SVG, mustValidate: false)
         ], new SubmitField("register-user-profile", "Submit"), $classPrefix);
         $this->user = $user;
     }

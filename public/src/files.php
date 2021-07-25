@@ -33,6 +33,10 @@ function getLatestUploadedFile(string $userID): string
     $bestTime = 0;
     $bestFile = "";
     $dir = $_SERVER["DOCUMENT_ROOT"] . "/media/users/$userID";
+    if (!file_exists($dir)) {
+        mkdir($dir, 0755);
+        return "";
+    }
     foreach (scanDirectory($dir) as $file) {
         if (($currentTime = filemtime("$dir/$file")) > $bestTime) {
             $bestTime = $currentTime;

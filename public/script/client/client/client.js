@@ -14,6 +14,7 @@ export class Client {
             topDomain = topDomain.split("/")[0];
             url = `ws://connect.${domain}.${topDomain}`;
         }
+        this.sessionID = getSessionID();
         this.socket = new WebSocket(url);
     }
 
@@ -26,13 +27,15 @@ export class Client {
     }
 
     authenticate = async () => {
-        await this.send(getSessionID());
-
+        this.socket.send(this.sessionID);
     }
 
     send = async(data) => {
-        this.socket.send(data);
-        console.log(`sent: ${data}`);
+        this.socket.send(JSON.stringify({
+            "content": data,
+            "roomID": "", // TODO return here after a user can create rooms
+            "session": this.sessionID,
+        }));
     }
 
     receive = async() => {

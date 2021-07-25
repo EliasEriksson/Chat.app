@@ -41,12 +41,19 @@ class FileField extends LabeledField
         if ($this->mustValidate) {
             if (!isset($_FILES[$this->name])) {
                 return ucfirst($this->getTrimmedLabel()) . " is missing in your request please resubmit.";
-            } elseif (!($_FILES[$this->name])) {
+            } elseif (!($_FILES[$this->name]["tmp_name"])) {
                 return ucfirst($this->getTrimmedLabel()) . " can not be left empty.";
             } else if (!$this->moveUploadedFile($_FILES[$this->name]["tmp_name"], uuid())) {
                 return ucfirst("File uploaded as " . lcfirst($this->getTrimmedLabel()) . " is not an allowed file type");
             }
+        } else {
+            echo var_dump($_FILES) . "<br>";
+            if (isset($_FILES[$this->name]) && $_FILES[$this->name]["tmp_name"]) {
+                echo "got here" . "<br>";
+                $this->moveUploadedFile($_FILES[$this->name]["tmp_name"], uuid());
+            }
         }
+
         return "";
     }
 
