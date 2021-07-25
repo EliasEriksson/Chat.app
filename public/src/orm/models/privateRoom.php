@@ -1,7 +1,7 @@
 <?php
 
 include_once __DIR__ . "/../dbManager.php";
-include_once __DIR__ . "/publicPublicRoom.php";
+include_once __DIR__ . "/publicRoom.php";
 
 
 class PrivateRoom extends PublicRoom
