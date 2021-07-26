@@ -3,6 +3,10 @@
 include_once __DIR__ . "/../uuid.php";
 include_once __DIR__ . "/models/user.php";
 include_once __DIR__ . "/models/userProfile.php";
+include_once __DIR__ . "/models/session.php";
+include_once __DIR__ . "/models/publicRoom.php";
+include_once __DIR__ . "/models/privateRoom.php";
+include_once __DIR__ . "/models/message.php";
 
 // Database manager
 // login info:
@@ -100,9 +104,30 @@ class DbManager
         return null;
     }
 
-    public function createRoom()
+    public function createRoom(string $name, ?string $password): PrivateRoom|PublicRoom|null
     {
+        $id = uuid();
+        $name = strip_tags($name);
+        if (is_null($password)) {
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        } else {
+            $passwordHash = null;
+        }
 
+
+        $query = $this->dbConn->prepare(
+            "insert into rooms
+                   values (uuid_to_bin(?), ?, ?);"
+        );
+
+        if ($query->bind_param("sss", $id, $name, $passwordHash) && $query->execute()) {
+            if (is_null($passwordHash)) {
+                return new PublicRoom($id, $name);
+            } else {
+                return new PrivateRoom($id, $name, $passwordHash);
+            }
+        }
+        return null;
     }
 
     public function updateUser(User $user, ?string $email = null, ?string $password = null): ?User
@@ -214,12 +239,40 @@ class DbManager
         return null;
     }
 
+    public function getRoom(string $id): PrivateRoom|PublicRoom|null
+    {
+        $query = $this->dbConn->prepare(
+            "select bin_to_uuid(id) as id, name, passwordHash 
+                   from rooms 
+                   where id = uuid_to_bin(?);"
+        );
+        if ($query->bind_param("s", $id) && $query->execute()) {
+            if (($result = $query->get_result()) && $result->num_rows) {
+                return PrivateRoom::fromAssoc($result->fetch_assoc());
+            }
+        }
+        return null;
+    }
+
     public function deleteSession(User $user): bool
     {
         $id = $user->getID();
         $query = $this->dbConn->prepare(
             "delete from sessions 
                    where userID = uuid_to_bin(?);"
+        );
+        if ($query->bind_param("s", $id) && $query->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function deleteRoom(PrivateRoom|PublicRoom $room): bool
+    {
+        $id = $room->getID();
+        $query = $this->dbConn->prepare(
+            "delete from rooms
+                   where id = uuid_to_bin(?);"
         );
         if ($query->bind_param("s", $id) && $query->execute()) {
             return true;

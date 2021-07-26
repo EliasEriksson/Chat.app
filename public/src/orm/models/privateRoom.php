@@ -8,7 +8,10 @@ class PrivateRoom extends PublicRoom
 {
     private string $passwordHash;
 
-    public static function fromAssoc(array $roomData): PrivateRoom {
+    public static function fromAssoc(array $roomData): PrivateRoom|PublicRoom {
+        if (is_null($roomData["passwordHash"])) {
+            return PublicRoom::fromAssoc($roomData);
+        }
         return new PrivateRoom(
             $roomData["id"],
             $roomData["name"],
