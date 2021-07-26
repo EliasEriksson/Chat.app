@@ -43,16 +43,23 @@ class RoomCreateForm extends Form
         if (!$dbManager) {
             $dbManager = new DbManager();
         }
-        echo "got here" . "<br>";
-        if ($room = $dbManager->createRoom($_POST["name"], $password)) {
+        echo "all setup for some SQL action!" . "<br>";
+        $temp = $room = $dbManager->createRoom($_POST["name"], $password);
+        echo var_dump($temp) . "<br>";
+        if ($temp) {
+            echo "room is made" . "<br>";
             if ($dbManager->createMembership($room, $user)) {
+                echo "membership is made" . "<br>";
                 return $room;
             }
+            echo "membership failed" . "<br>";
             // something must have gone wrong with the session.
             // dont want to create a room with no user
             // cleaning up
             $dbManager->deleteRoom($room);
+            return null;
         }
+        echo "room creation failed" . "<br>";
         return null;
     }
 

@@ -108,18 +108,16 @@ class DbManager
     {
         $id = uuid();
         $name = strip_tags($name);
-        if (is_null($password)) {
+        if (!is_null($password)) {
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         } else {
             $passwordHash = null;
         }
 
-
         $query = $this->dbConn->prepare(
             "insert into rooms
                    values (uuid_to_bin(?), ?, ?);"
         );
-
         if ($query->bind_param("sss", $id, $name, $passwordHash) && $query->execute()) {
             if (is_null($passwordHash)) {
                 return new PublicRoom($id, $name);
@@ -133,18 +131,14 @@ class DbManager
     public function createMembership(PrivateRoom|PublicRoom $room, User $user): bool {
         $userID = $user->getID();
         $roomID = $room->getID();
-
         $query = $this->dbConn->prepare(
             "insert into members
                    values (default, uuid_to_bin(?), uuid_to_bin(?));"
         );
 
-        echo "" . "<br>";
         if ($query->bind_param("ss", $userID, $roomID) && $query->execute()) {
             return true;
         }
-        echo var_dump($query->error) . "<br>";
-        echo var_dump($_SESSION) . "<br>";
         return false;
     }
 

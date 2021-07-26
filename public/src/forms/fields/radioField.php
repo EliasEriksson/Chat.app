@@ -17,8 +17,8 @@ class RadioField extends LabeledField
         bool $mustValidate = true
     )
     {
-        parent::__construct($labelText, $name, $value, $id, $refillOnFailedPost, $mustValidate);
         $this->checked = $checked;
+        parent::__construct($labelText, $name, $value, $id, $refillOnFailedPost, $mustValidate);
     }
 
     public function toHTML(): string
@@ -37,5 +37,18 @@ class RadioField extends LabeledField
             $html .= "<input class='$class' type='radio' name='$this->name' value='$this->value' $checked>";
         }
         return $this->wrapWithLabel($html);
+    }
+
+    public function refillValue(): void
+    {
+        if ($this->refillOnFailedPost) {
+            if (isset($_POST[$this->name])) {
+                if ($_POST[$this->name] === $this->value) {
+                    $this->checked = true;
+                } else {
+                    $this->checked = false;
+                }
+            }
+        }
     }
 }

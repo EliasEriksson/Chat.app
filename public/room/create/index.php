@@ -11,6 +11,7 @@ requireUserProfileLogin();
 $roomCreateForm = new RoomCreateForm();
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($room = $roomCreateForm->validateForm()) {
+        echo "successfully created a room! redirecting..." . "<br>";
         redirect(".");
     }
 }

@@ -67,7 +67,7 @@ create table rooms
 (
     id           binary(16) unique not null,
     name         varchar(255)      not null,
-    passwordHash varchar(255)      not null,
+    passwordHash varchar(255),
 
     constraint roomPK primary key (id)
 );
@@ -75,9 +75,10 @@ create table rooms
 create table members
 (
     id     int auto_increment not null,
-    userID binary(16) unique not null,
-    roomID binary(16) unique not null,
+    userID binary(16)         not null,
+    roomID binary(16)         not null,
 
+    constraint uniqueMembership unique key (userID, roomID),
     constraint membersPK primary key (id)
 );
 
