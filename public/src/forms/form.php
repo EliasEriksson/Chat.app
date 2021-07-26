@@ -2,11 +2,13 @@
 
 include_once __DIR__ . "/fields/htmlElement.php";
 include_once __DIR__ . "/fields/submitField.php";
+include_once __DIR__ . "/../flattenArray.php";
 
 
 abstract class Form extends HTMLElement
 {
     protected array $fields;
+    private array $flattenedFields;
     private string $error;
     private bool $userError;
     private SubmitField $submit;
@@ -20,7 +22,8 @@ abstract class Form extends HTMLElement
     )
     {
         parent::__construct($classPrefix);
-        foreach ($fields as $field) {
+        $this->flattenedFields = flattenArray($fields);
+        foreach ($this->flattenedFields as $field) {
             $field->refillValue();
             $field->setClassPrefix($classPrefix);
         }
@@ -32,6 +35,7 @@ abstract class Form extends HTMLElement
         $this->userError = false;
     }
 
+
     public abstract function validateForm(): ?object;
 
     protected function validateFields(): bool
@@ -41,7 +45,7 @@ abstract class Form extends HTMLElement
             return false;
         }
 
-        foreach ($this->fields as $field) {
+        foreach ($this->flattenedFields as $field) {
             if ($error = $field->validateField()) {
                 $this->setError($error);
                 return false;
@@ -68,6 +72,26 @@ abstract class Form extends HTMLElement
         return "<span class='$class'>$error</span>";
     }
 
+    private function arrayToHTML(array $elements, bool $addDiv = false): string
+    {
+        $html = "";
+        $names = [];
+
+        foreach ($elements as $element) {
+            if (is_array($element)) {
+                $html .= $this->arrayToHTML($element, true);
+            } else {
+                $html .= $element->toHTML();
+                array_push($names, $element->getName());
+            }
+        }
+        if ($addDiv) {
+            $class = implode("-", [...$names, "wrapper"]);
+            $html = "<div class='$class'>$html</div>";
+        }
+        return $html;
+    }
+
     public function toHTML(): string
     {
         $class = $this->prefixClass("form");
@@ -81,9 +105,7 @@ abstract class Form extends HTMLElement
         }
         $html = "<form enctype='$enctype' method='$this->method' class='$class'>";
 
-        foreach ([...$this->fields, $this->submit] as $field) {
-            $html .= $field->toHTML();
-        }
+        $html .= $this->arrayToHTML([...$this->fields, $this->submit]);
 
         if ($this->userError) {
             $html .= $this->errorToHTML();

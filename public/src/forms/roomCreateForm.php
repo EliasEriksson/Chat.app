@@ -8,13 +8,16 @@ include_once __DIR__ . "/fields/radioField.php";
 include_once __DIR__ . "/fields/passwordField.php";
 
 
-class RoomCreateForm extends Form {
+class RoomCreateForm extends Form
+{
     public function __construct(string $classPrefix = "")
     {
         parent::__construct([
             new TextField("Chat room name:", "name"),
-            new RadioField("Public room:", "type", "public"),
-            new RadioField("Private room:", "type", "private"),
+            [
+                new RadioField("Public room:", "type", "public"),
+                new RadioField("Private room:", "type", "private")
+            ],
             new PasswordField("Room password:", "password1", mustValidate: false),
             new PasswordField("Retype password:", "password2", mustValidate: false)
         ], new SubmitField("room-submit", "Create"), $classPrefix);
