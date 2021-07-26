@@ -63,7 +63,11 @@ class FileField extends LabeledField
         $class = $this->prefixClass("$this->name-file-input");
         $acceptedMimes = MIME::acceptedMimes($this->allowedMIMEs);
 
-        $html .= "<input class='$class' type='file' name='$this->name' accept='$acceptedMimes'>";
+        if ($this->id) {
+            $html .= "<input id='$this->id' class='$class' type='file' name='$this->name' accept='$acceptedMimes'>";
+        } else {
+            $html .= "<input class='$class' type='file' name='$this->name' accept='$acceptedMimes'>";
+        }
         return $this->wrapWithLabel($html);
     }
 }

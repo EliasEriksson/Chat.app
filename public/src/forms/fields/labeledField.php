@@ -8,11 +8,12 @@ abstract class LabeledField extends Field
         string $labelText,
         string $name,
         string $value = "",
+        string $id = "",
         bool $refillOnFailedPost = true,
         bool $mustValidate = true
     )
     {
-        parent::__construct($name, $value, $refillOnFailedPost, $mustValidate);
+        parent::__construct($name, $value, $id, $refillOnFailedPost, $mustValidate);
         $this->labelText = $labelText;
     }
 

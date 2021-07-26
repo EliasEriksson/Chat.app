@@ -15,8 +15,8 @@ class RoomCreateForm extends Form
         parent::__construct([
             new TextField("Chat room name:", "name"),
             [
-                new RadioField("Public room:", "type", "public", true),
-                new RadioField("Private room:", "type", "private")
+                new RadioField("Public room:", "type", "public", true, id: "enable-passwords"),
+                new RadioField("Private room:", "type", "private", id: "disable-passwords")
             ],
             new PasswordField("Room password:", "password1", mustValidate: false),
             new PasswordField("Retype password:", "password2", mustValidate: false)
@@ -47,5 +47,17 @@ class RoomCreateForm extends Form
             return $room;
         }
         return null;
+    }
+
+    public function toHTML(): string
+    {
+        $html = parent::toHTML();
+        $html .= "<script  
+                      data-enable='enable-passwords'
+                      data-disable='disable-passwords'
+                      data-targets='password1-password-input password2-password-input' 
+                      src='/script/disableInputs.js'>
+                  </script>";
+        return $html;
     }
 }

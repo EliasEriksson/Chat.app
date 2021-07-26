@@ -9,7 +9,12 @@ class TextField extends LabeledField
         $html = $this->wrapWithSpan($this->labelText);
         $class = $this->prefixClass("$this->name-text-input");
 
-        $html .= "<input class='$class' type='text' name='$this->name' value='$this->value'>";
+        if ($this->id) {
+            $html .= "<input id='$this->id' class='$class' type='text' name='$this->name' value='$this->value'>";
+        } else {
+            $html .= "<input class='$class' type='text' name='$this->name' value='$this->value'>";
+        }
+
         return $this->wrapWithLabel($html);
     }
 }

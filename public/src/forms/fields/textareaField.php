@@ -9,7 +9,11 @@ class TextareaField extends LabeledField {
         $html = $this->wrapWithSpan($this->labelText);
         $class = $this->prefixClass("$this->name-textarea-input");
 
-        $html .= "<textarea class='$class' name='$this->name'>$this->value</textarea>";
+        if ($this->id) {
+            $html .= "<textarea id='$this->id' class='$class' name='$this->name'>$this->value</textarea>";
+        } else {
+            $html .= "<textarea class='$class' name='$this->name'>$this->value</textarea>";
+        }
         return $this->wrapWithLabel($html);
     }
 }

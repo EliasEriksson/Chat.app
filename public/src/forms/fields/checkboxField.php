@@ -9,7 +9,11 @@ class CheckboxField extends LabeledField {
         $html = $this->wrapWithSpan($this->labelText);
         $class = $this->prefixClass("$this->name-checkbox-input");
 
-        $html .= "<input class='$class' type='checkbox' name='$this->name' value='$this->value'>";
+        if ($this->id) {
+            $html .= "<input id='$this->id' class='$class' type='checkbox' name='$this->name' value='$this->value'>";
+        } else {
+            $html .= "<input class='$class' type='checkbox' name='$this->name' value='$this->value'>";
+        }
         return $this->wrapWithLabel($html);
     }
 }

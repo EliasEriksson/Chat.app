@@ -9,7 +9,11 @@ class EmailField extends LabeledField {
         $html = $this->wrapWithSpan($this->labelText);
         $class = $this->prefixClass("$this->name-email-input");
 
-        $html .= "<input class='$class' type='email' name='$this->name' value='$this->value'>";
+        if ($this->id) {
+            $html .= "<input id='$this->id' class='$class' type='email' name='$this->name' value='$this->value'>";
+        } else {
+            $html .= "<input class='$class' type='email' name='$this->name' value='$this->value'>";
+        }
         return $this->wrapWithLabel($html);
     }
 }

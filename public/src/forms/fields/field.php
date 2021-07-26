@@ -8,10 +8,12 @@ abstract class Field extends HTMLElement
     protected string $value;
     protected bool $refillOnFailedPost;
     protected bool $mustValidate;
+    protected string $id;
 
     public function __construct(
         string $name,
         string $value = "",
+        string $id = "",
         bool $refillOnFailedPost = true,
         bool $mustValidate = true
     )
@@ -19,6 +21,7 @@ abstract class Field extends HTMLElement
         parent::__construct();
         $this->name = $name;
         $this->value = $value;
+        $this->id = $id;
         $this->refillOnFailedPost = $refillOnFailedPost;
         $this->mustValidate = $mustValidate;
     }

@@ -3,12 +3,21 @@
 include_once __DIR__ . "/labeledField.php";
 
 
-class RadioField extends LabeledField {
+class RadioField extends LabeledField
+{
     private bool $checked;
 
-    public function __construct(string $labelText, string $name, string $value = "", bool $checked = false, bool $refillOnFailedPost = true, bool $mustValidate = true)
+    public function __construct(
+        string $labelText,
+        string $name,
+        string $value = "",
+        bool $checked = false,
+        string $id = "",
+        bool $refillOnFailedPost = true,
+        bool $mustValidate = true
+    )
     {
-        parent::__construct($labelText, $name, $value, $refillOnFailedPost, $mustValidate);
+        parent::__construct($labelText, $name, $value, $id, $refillOnFailedPost, $mustValidate);
         $this->checked = $checked;
     }
 
@@ -22,7 +31,11 @@ class RadioField extends LabeledField {
             $checked = "";
         }
 
-        $html .= "<input class='$class' type='radio' name='$this->name' value='$this->value' $checked>";
+        if ($this->id) {
+            $html .= "<input id='$this->id' class='$class' type='radio' name='$this->name' value='$this->value' $checked>";
+        } else {
+            $html .= "<input class='$class' type='radio' name='$this->name' value='$this->value' $checked>";
+        }
         return $this->wrapWithLabel($html);
     }
 }
