@@ -2,6 +2,8 @@ drop database if exists chatapp;
 create database chatapp;
 use chatapp;
 
+
+# TODO implement binary16 instead of char36 https://www.mysqltutorial.org/mysql-uuid/
 create table users
 (
     id           char(36) unique default uuid(),
