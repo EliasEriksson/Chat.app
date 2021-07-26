@@ -128,7 +128,8 @@ class DbManager
         return null;
     }
 
-    public function createMembership(PrivateRoom|PublicRoom $room, User $user): bool {
+    public function createMembership(PrivateRoom|PublicRoom $room, User $user): bool
+    {
         $userID = $user->getID();
         $roomID = $room->getID();
         $query = $this->dbConn->prepare(
@@ -264,6 +265,28 @@ class DbManager
             }
         }
         return null;
+    }
+
+    public function isMember(User $user, PrivateRoom|PublicRoom $room): bool
+    {
+        $userID = $user->getID();
+        $roomID = $room->getID();
+
+        $query = $this->dbConn->prepare(
+            "select exists (
+                     select 1 
+                     from members
+                     where userID = uuid_to_bin(?) and roomID = uuid_to_bin(?)
+                   ) as member;"
+        );
+        if ($query->bind_param("ss", $userID, $roomID) && $query->execute()) {
+            if (($result = $query->get_result()) && $result->num_rows) {
+                if ($result->fetch_assoc()["member"]) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public function deleteSession(User $user): bool

@@ -6,6 +6,7 @@ include_once __DIR__ . "/../orm/models/publicRoom.php";
 include_once __DIR__ . "/fields/textField.php";
 include_once __DIR__ . "/fields/radioField.php";
 include_once __DIR__ . "/fields/passwordField.php";
+include_once __DIR__ . "/fields/submitField.php";
 
 
 class RoomCreateForm extends Form
@@ -33,7 +34,7 @@ class RoomCreateForm extends Form
             if (isset($_POST["password1"]) && isset($_POST["password2"])) {
                 $password = $_POST["password1"];
             } else {
-                $this->setError("no passwords.");
+                $this->setError("Passwords doesnt match.");
                 return null;
             }
         } else {
@@ -43,23 +44,17 @@ class RoomCreateForm extends Form
         if (!$dbManager) {
             $dbManager = new DbManager();
         }
-        echo "all setup for some SQL action!" . "<br>";
-        $temp = $room = $dbManager->createRoom($_POST["name"], $password);
-        echo var_dump($temp) . "<br>";
-        if ($temp) {
-            echo "room is made" . "<br>";
+
+        if ($room = $dbManager->createRoom($_POST["name"], $password)) {
             if ($dbManager->createMembership($room, $user)) {
-                echo "membership is made" . "<br>";
                 return $room;
             }
-            echo "membership failed" . "<br>";
             // something must have gone wrong with the session.
             // dont want to create a room with no user
             // cleaning up
             $dbManager->deleteRoom($room);
             return null;
         }
-        echo "room creation failed" . "<br>";
         return null;
     }
 

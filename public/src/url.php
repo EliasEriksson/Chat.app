@@ -29,6 +29,6 @@ function getPageParameter(string $redirect = null): string
     if ($redirect) {
         redirect($redirect);
     }
-
+    // never gets here but linter is happy
     return "";
 }
