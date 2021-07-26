@@ -130,6 +130,21 @@ class DbManager
         return null;
     }
 
+    public function createMembership(PrivateRoom|PublicRoom $room, User $user): bool {
+        $userID = $user->getID();
+        $roomID = $room->getID();
+
+        $query = $this->dbConn->prepare(
+            "insert into members
+                   values (default, uuid_to_bin(?), uuid_to_bin(?));"
+        );
+
+        if ($query->bind_param("ss", $userID, $roomID) && $query->execute()) {
+            return true;
+        }
+        return false;
+    }
+
     public function updateUser(User $user, ?string $email = null, ?string $password = null): ?User
     {
         $id = $user->getID();
