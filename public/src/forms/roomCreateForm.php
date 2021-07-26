@@ -25,7 +25,7 @@ class RoomCreateForm extends Form
 
     public function validateForm(DbManager $dbManager = null): PrivateRoom|PublicRoom|null
     {
-        requireUserProfileLogin();
+        $user = getSessionUser();
         if (!$this->validateFields()) {
             return null;
         }
@@ -45,7 +45,13 @@ class RoomCreateForm extends Form
         }
 
         if ($room = $dbManager->createRoom($_POST["name"], $password)) {
-            return $room;
+            if ($dbManager->createMembership($room, $user)) {
+                return $room;
+            }
+            // something must have gone wrong with the session.
+            // dont want to create a room with no user
+            // cleaning up
+            $dbManager->deleteRoom($room);
         }
         return null;
     }

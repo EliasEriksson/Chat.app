@@ -8,6 +8,19 @@
  * data-targets is space separated classes and all elements with the given
  * classes will be enabled and disabled by the enabler and disabler.
  */
+
+disableTargets = (targetElements) => {
+    for (let targetElement of targetElements) {
+        targetElement.disabled = false;
+    }
+}
+
+enableTargets = (targetElements) => {
+    for (const targetElement of targetElements) {
+        targetElement.disabled = true;
+    }
+}
+
 main = () => {
     let script = document.currentScript;
     window.addEventListener("load", () => {
@@ -22,22 +35,23 @@ main = () => {
             }
         }
 
+        if (enableElement.checked) {
+            enableTargets(targetElements);
+        } else {
+            disableTargets(targetElements);
+        }
+
         enableElement.addEventListener("change", (event) => {
             if (event.target.checked) {
-                for (let targetElement of targetElements) {
-                    targetElement.disabled = false;
-                }
+                enableTargets(targetElements);
             }
         })
 
         disableElement.addEventListener("change", (event) => {
             if (event.target.checked) {
-                for (const targetElement of targetElements) {
-                    targetElement.disabled = true;
-                }
+                disableTargets(targetElements)
             }
         })
-        console.log("room", script);
     });
 }
 
