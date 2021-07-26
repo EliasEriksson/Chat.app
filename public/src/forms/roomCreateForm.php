@@ -15,7 +15,7 @@ class RoomCreateForm extends Form
         parent::__construct([
             new TextField("Chat room name:", "name"),
             [
-                new RadioField("Public room:", "type", "public"),
+                new RadioField("Public room:", "type", "public", true),
                 new RadioField("Private room:", "type", "private")
             ],
             new PasswordField("Room password:", "password1", mustValidate: false),
