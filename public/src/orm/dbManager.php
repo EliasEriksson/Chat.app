@@ -139,9 +139,12 @@ class DbManager
                    values (default, uuid_to_bin(?), uuid_to_bin(?));"
         );
 
+        echo "" . "<br>";
         if ($query->bind_param("ss", $userID, $roomID) && $query->execute()) {
             return true;
         }
+        echo var_dump($query->error) . "<br>";
+        echo var_dump($_SESSION) . "<br>";
         return false;
     }
 

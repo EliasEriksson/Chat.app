@@ -11,9 +11,9 @@ class FileField extends LabeledField
     private string $relativeUploadDirectory;
     private int $allowedMIMEs;
 
-    public function __construct(string $labelText, string $name, User|UserProfile $user, int $allowedMIMEs, bool $mustValidate = true)
+    public function __construct(string $labelText, string $name, User|UserProfile $user, int $allowedMIMEs, string $id = "", bool $mustValidate = true)
     {
-        parent::__construct($labelText, $name, "", false, $mustValidate);
+        parent::__construct($labelText, $name, "", $id,false, $mustValidate);
         $this->relativeUploadDirectory = "/media/users/" . $user->getID();
         $this->allowedMIMEs = $allowedMIMEs;
     }

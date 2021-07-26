@@ -43,7 +43,7 @@ class RoomCreateForm extends Form
         if (!$dbManager) {
             $dbManager = new DbManager();
         }
-
+        echo "got here" . "<br>";
         if ($room = $dbManager->createRoom($_POST["name"], $password)) {
             if ($dbManager->createMembership($room, $user)) {
                 return $room;
