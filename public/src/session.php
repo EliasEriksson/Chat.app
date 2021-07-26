@@ -7,7 +7,7 @@ include_once __DIR__ . "/url.php";
 
 function requireUserLogin(string $redirect = "/login/"): void
 {
-        if (!isset($_SESSION["user"])) {
+    if (!isset($_SESSION["user"])) {
         redirect($redirect);
     }
 }
@@ -20,10 +20,12 @@ function getSessionUser(string $redirect = "/login/"): User
 }
 
 
-function requireUserProfileLogin(): void
+function requireUserProfileLogin(string $redirect = "/login/"): void
 {
     requireUserLogin();
-    # TODO implement the rest after config file is done
+    if (!isset($_SESSION["userProfile"])) {
+        redirect($redirect);
+    }
 }
 
 function getSessionUserProfile(): UserProfile

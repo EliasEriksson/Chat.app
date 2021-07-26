@@ -60,7 +60,8 @@ class DbManager
     public function createUser(string $email, string $password, int $failedRetries = 0): ?User
     {
         $query = $this->dbConn->prepare(
-            "insert into users values (?, ?, ?);"
+            "insert into users 
+                   values (uuid_to_bin(?), ?, ?);"
         );
         $uuid = uuid();
         $email = strip_tags($email);
@@ -88,7 +89,8 @@ class DbManager
             $avatar = "media/assets/defaultAvatar.png";
         }
         $query = $this->dbConn->prepare(
-            'insert into userProfiles values (?, ?, ?);'
+            'insert into userProfiles 
+                   values (uuid_to_bin(?), ?, ?);'
         );
         $username = strip_tags($username);
 
@@ -96,6 +98,11 @@ class DbManager
             return new UserProfile($id, $username, $avatar);
         }
         return null;
+    }
+
+    public function createRoom()
+    {
+
     }
 
     public function updateUser(User $user, ?string $email = null, ?string $password = null): ?User
@@ -112,7 +119,9 @@ class DbManager
         }
 
         $query = $this->dbConn->prepare(
-            "update users set email = ?, passwordHash = ? where id = ?;"
+            "update users 
+                   set email = ?, passwordHash = ? 
+                   where id = uuid_to_bin(?);"
         );
 
         if ($query->bind_param("sss", $email, $passwordHash, $id) && $query->execute()) {
@@ -131,7 +140,9 @@ class DbManager
             $avatar = $userProfile->getAvatar();
         }
         $query = $this->dbConn->prepare(
-            "update userProfiles set username = ?, avatar = ? where userID = ?;"
+            "update userProfiles 
+                   set username = ?, avatar = ? 
+                   where userID = uuid_to_bin(?);"
         );
 
         if ($query->bind_param("sss", $username, $avatar, $id) && $query->execute()) {
@@ -140,10 +151,27 @@ class DbManager
         return null;
     }
 
+    public function updateSession(User $user): bool
+    {
+        session_regenerate_id();
+        $id = $user->getID();
+        $sessionID = session_id();
+        $query = $this->dbConn->prepare(
+            "insert into sessions (userID, sessionID) 
+                   values (uuid_to_bin(?), uuid_to_bin(?)) 
+                   on duplicate key update sessionID = uuid_to_bin(?);"
+        );
+        if ($query->bind_param("sss", $id, $sessionID, $sessionID) && $query->execute()) {
+            return true;
+        }
+        return false;
+    }
+
     public function getUser(string $id): ?User
     {
         $query = $this->dbConn->prepare(
-            "select * from users where id = ?;"
+            "select bin_to_uuid(id) as id, email, passwordHash 
+                   from users where id = uuid_to_bin(?);"
         );
         if ($query->bind_param("s", $id) && $query->execute()) {
             // if there is a result and the result have rows
@@ -157,7 +185,9 @@ class DbManager
     public function getUserFromEmail(string $email): ?User
     {
         $query = $this->dbConn->prepare(
-            "select * from users where email = ?;"
+            "select bin_to_uuid(id) as id, email, passwordHash 
+                   from users 
+                   where email = ?;"
         );
         if ($query->bind_param("s", $email) && $query->execute()) {
             if (($result = $query->get_result()) && $result->num_rows) {
@@ -171,7 +201,9 @@ class DbManager
     {
         $id = $user->getID();
         $query = $this->dbConn->prepare(
-            "select * from userProfiles where userID = ?;"
+            "select bin_to_uuid(userID) as userID, username, avatar 
+                   from userProfiles 
+                   where userID = uuid_to_bin(?);"
         );
 
         if ($query->bind_param("s", $id) && $query->execute()) {
@@ -182,28 +214,21 @@ class DbManager
         return null;
     }
 
-    public function updateSession(User $user): bool
+    public function deleteSession(User $user): bool
     {
-        session_regenerate_id();
-        $id = $user->getID();
-        $sessionID = session_id();
-        $query = $this->dbConn->prepare(
-            "insert into sessions (userID, sessionID) values (?, ?) on duplicate key update sessionID = ?;"
-        );
-        if ($query->bind_param("sss", $id, $sessionID, $sessionID) && $query->execute()) {
-            return true;
-        }
-        return false;
-    }
-
-    public function deleteSession(User $user): bool {
         $id = $user->getID();
         $query = $this->dbConn->prepare(
-            "delete from sessions where userID = ?;"
+            "delete from sessions 
+                   where userID = uuid_to_bin(?);"
         );
         if ($query->bind_param("s", $id) && $query->execute()) {
             return true;
         }
         return false;
+    }
+
+    public function __destruct()
+    {
+        $this->dbConn->close();
     }
 }

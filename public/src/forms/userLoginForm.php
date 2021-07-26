@@ -32,6 +32,9 @@ class UserLoginForm extends Form
             if ($user->authenticate($_POST["password"])) {
                 $dbManager->updateSession($user);
                 $_SESSION["user"] = $user;
+                if ($userProfile = $dbManager->getUserProfile($user)) {
+                    $_SESSION["userProfile"] = $userProfile;
+                }
                 return $user;
             } else {
                 $this->setError("Passwords Does not match.");

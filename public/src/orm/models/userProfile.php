@@ -13,7 +13,7 @@ class UserProfile
     public static function fromAssoc(array $userProfileData): UserProfile
     {
         return new UserProfile(
-            $userProfileData["id"],
+            $userProfileData["userID"],
             $userProfileData["username"],
             $userProfileData["avatar"]
         );

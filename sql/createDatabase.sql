@@ -2,11 +2,40 @@ drop database if exists chatapp;
 create database chatapp;
 use chatapp;
 
+DELIMITER //
+
+CREATE FUNCTION uuid_to_bin(_uuid char(36))
+    RETURNS BINARY(16)
+    LANGUAGE SQL  DETERMINISTIC  CONTAINS SQL  SQL SECURITY INVOKER
+    RETURN
+        UNHEX(CONCAT(
+                SUBSTR(_uuid, 15, 4),
+                SUBSTR(_uuid, 10, 4),
+                SUBSTR(_uuid,  1, 8),
+                SUBSTR(_uuid, 20, 4),
+                SUBSTR(_uuid, 25) ));
+//
+CREATE FUNCTION bin_to_uuid(_bin BINARY(16))
+    RETURNS char(36)
+    LANGUAGE SQL  DETERMINISTIC  CONTAINS SQL  SQL SECURITY INVOKER
+    RETURN
+        LCASE(CONCAT_WS('-',
+                        HEX(SUBSTR(_bin,  5, 4)),
+                        HEX(SUBSTR(_bin,  3, 2)),
+                        HEX(SUBSTR(_bin,  1, 2)),
+                        HEX(SUBSTR(_bin,  9, 2)),
+                        HEX(SUBSTR(_bin, 11))
+            ));
+
+//
+DELIMITER ;
+
+
 
 # TODO implement binary16 instead of char36 https://www.mysqltutorial.org/mysql-uuid/
 create table users
 (
-    id           char(36) unique default uuid(),
+    id           binary(16) unique not null,
     email        varchar(255) unique not null,
     passwordHash varchar(255)        not null,
 
@@ -17,7 +46,7 @@ create table users
 
 create table userProfiles
 (
-    userID   char(36) unique not null,
+    userID   binary(16) unique not null,
     username varchar(255)    not null,
     avatar   varchar(100) default 'media/assets/defaultAvatar.png',
 
@@ -27,7 +56,7 @@ create table userProfiles
 
 create table sessions
 (
-    userID    char(36) unique not null,
+    userID    binary(16) unique not null,
     sessionID varchar(128)    not null,
     constraint sessionsSessionID check ( sessionID rlike '^[-,a-zA-Z0-9]{1,128}$'),
     constraint sessionsPK primary key (userID)
@@ -35,7 +64,7 @@ create table sessions
 
 create table rooms
 (
-    id           char(36) unique not null,
+    id           binary(16) unique not null,
     name         varchar(255)    not null,
     passwordHash varchar(255),
 
@@ -44,18 +73,18 @@ create table rooms
 
 create table members
 (
-    id     char(36) unique not null,
-    userID char(36) unique not null,
-    roomID char(36) unique not null,
+    id     binary(16) unique not null,
+    userID binary(16) unique not null,
+    roomID binary(16) unique not null,
 
     constraint membersPK primary key (id)
 );
 
 create table messages
 (
-    id       char(36) unique not null,
-    userID   char(36) unique not null,
-    roomID   char(36) unique not null,
+    id       binary(16) unique not null,
+    userID   binary(16) unique not null,
+    roomID   binary(16) unique not null,
     postDate timestamp default current_timestamp,
     content  text            not null,
 
@@ -64,9 +93,9 @@ create table messages
 
 create table oldMessages
 (
-    id       char(36) unique not null,
-    userID   char(36) unique not null,
-    roomID   char(36) unique not null,
+    id       binary(16) unique not null,
+    userID   binary(16) unique not null,
+    roomID   binary(16) unique not null,
     postDate timestamp default current_timestamp,
     content  text            not null,
 
