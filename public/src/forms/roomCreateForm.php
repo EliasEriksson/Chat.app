@@ -24,7 +24,7 @@ class RoomCreateForm extends Form
         ], new SubmitField("room-submit", "Create"), $classPrefix);
     }
 
-    public function validateForm(DbManager $dbManager = null): PrivateRoom|PublicRoom|null
+    public function validateForm(DbManager $dbManager = null): ?Room
     {
         $user = getSessionUser();
         if (!$this->validateFields()) {

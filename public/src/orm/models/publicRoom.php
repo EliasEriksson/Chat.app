@@ -1,9 +1,10 @@
 <?php
 
 include_once __DIR__ . "/../dbManager.php";
+include_once __DIR__ . "/room.php";
 
 
-class PublicRoom
+class PublicRoom extends Room
 {
     private string $id;
     private string $name;
@@ -18,8 +19,7 @@ class PublicRoom
 
     public function __construct(string $id, string $name)
     {
-        $this->id = $id;
-        $this->name = $name;
+        parent::__construct($id, $name);
     }
 
 
@@ -31,5 +31,10 @@ class PublicRoom
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function havePassword(): bool
+    {
+        return false;
     }
 }

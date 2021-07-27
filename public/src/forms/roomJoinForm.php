@@ -8,9 +8,11 @@ include_once __DIR__ . "/fields/submitField.php";
 
 
 class RoomJoinForm extends Form {
-    public function __construct(PrivateRoom|PublicRoom $room, string $classPrefix = "", string $method = "POST")
+    private Room $room;
+    public function __construct(Room $room, string $classPrefix = "", string $method = "POST")
     {
         $roomName = $room->getName();
+        $this->room = $room;
         parent::__construct([
         ], new SubmitField("room-join-submit", "Join $roomName"));
     }
@@ -20,5 +22,7 @@ class RoomJoinForm extends Form {
         if (!$this->validateFields()) {
             return null;
         }
+        echo "clicked" . "<br>";
+        return null;
     }
 }

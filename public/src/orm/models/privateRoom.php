@@ -1,14 +1,14 @@
 <?php
 
 include_once __DIR__ . "/../dbManager.php";
-include_once __DIR__ . "/publicRoom.php";
+include_once __DIR__ . "/room.php";
 
 
-class PrivateRoom extends PublicRoom
+class PrivateRoom extends Room
 {
     private string $passwordHash;
 
-    public static function fromAssoc(array $roomData): PrivateRoom|PublicRoom {
+    public static function fromAssoc(array $roomData): Room {
         if (is_null($roomData["passwordHash"])) {
             return PublicRoom::fromAssoc($roomData);
         }
@@ -28,5 +28,10 @@ class PrivateRoom extends PublicRoom
     public function getPasswordHash(): string
     {
         return $this->passwordHash;
+    }
+
+    public function havePassword(): bool
+    {
+        return false;
     }
 }

@@ -104,7 +104,7 @@ class DbManager
         return null;
     }
 
-    public function createRoom(string $name, ?string $password): PrivateRoom|PublicRoom|null
+    public function createRoom(string $name, ?string $password): ?Room
     {
         $id = uuid();
         $name = strip_tags($name);
@@ -128,7 +128,7 @@ class DbManager
         return null;
     }
 
-    public function createMembership(PrivateRoom|PublicRoom $room, User $user): bool
+    public function createMembership(Room $room, User $user): bool
     {
         $userID = $user->getID();
         $roomID = $room->getID();
@@ -252,7 +252,7 @@ class DbManager
         return null;
     }
 
-    public function getRoom(string $id): PrivateRoom|PublicRoom|null
+    public function getRoom(string $id): ?Room
     {
         $query = $this->dbConn->prepare(
             "select bin_to_uuid(id) as id, name, passwordHash 
@@ -267,7 +267,7 @@ class DbManager
         return null;
     }
 
-    public function isMember(User $user, PrivateRoom|PublicRoom $room): bool
+    public function isMember(User $user, Room $room): bool
     {
         $userID = $user->getID();
         $roomID = $room->getID();
@@ -302,7 +302,7 @@ class DbManager
         return false;
     }
 
-    public function deleteRoom(PrivateRoom|PublicRoom $room): bool
+    public function deleteRoom(Room $room): bool
     {
         $id = $room->getID();
         $query = $this->dbConn->prepare(
