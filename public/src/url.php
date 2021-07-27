@@ -1,5 +1,7 @@
 <?php
 
+use JetBrains\PhpStorm\NoReturn;
+
 
 /**
  * header is a bad name i like redirect more
@@ -7,9 +9,10 @@
  * @param string $url
  * @link string $url
  */
-function redirect(string $url)
+#[NoReturn] function redirect(string $url)
 {
     header("location: $url");
+    die();
 }
 
 /**
