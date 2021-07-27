@@ -9,6 +9,7 @@ include_once __DIR__ . "/fields/submitField.php";
 
 class RoomJoinForm extends Form {
     private Room $room;
+
     public function __construct(Room $room, string $classPrefix = "", string $method = "POST")
     {
         $roomName = $room->getName();
@@ -26,8 +27,9 @@ class RoomJoinForm extends Form {
         }
 
         $roomID = $this->room->getID();
-        if ($this->room->havePassword()) {
-            redirect("authenticate/?$roomID");
+        # TODO is there a way to design so instanceof can be avoided?
+        if ($this->room instanceof PrivateRoom) {
+            redirect("/room/join/authenticate/?$roomID");
         }
 
         if (!$dbManager) {

@@ -47,7 +47,6 @@ class FileField extends LabeledField
                 return ucfirst("File uploaded as " . lcfirst($this->getTrimmedLabel()) . " is not an allowed file type");
             }
         } else {
-            echo var_dump($_FILES) . "<br>";
             if (isset($_FILES[$this->name]) && $_FILES[$this->name]["tmp_name"]) {
                 echo "got here" . "<br>";
                 $this->moveUploadedFile($_FILES[$this->name]["tmp_name"], uuid());

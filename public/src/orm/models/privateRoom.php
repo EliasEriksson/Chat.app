@@ -8,7 +8,8 @@ class PrivateRoom extends Room
 {
     private string $passwordHash;
 
-    public static function fromAssoc(array $roomData): Room {
+    public static function fromAssoc(array $roomData): Room
+    {
         if (is_null($roomData["passwordHash"])) {
             return PublicRoom::fromAssoc($roomData);
         }
@@ -30,8 +31,9 @@ class PrivateRoom extends Room
         return $this->passwordHash;
     }
 
-    public function havePassword(): bool
+    public function authenticate(string $password): bool
     {
-        return false;
+        return password_verify($password, $this->passwordHash);
+
     }
 }

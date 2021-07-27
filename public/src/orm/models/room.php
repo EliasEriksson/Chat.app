@@ -1,6 +1,8 @@
 <?php
 
 include_once __DIR__ . "/../dbManager.php";
+include_once __DIR__ . "/privateRoom.php";
+include_once __DIR__ . "/publicRoom.php";
 
 abstract class Room
 {
@@ -24,6 +26,4 @@ abstract class Room
     {
         return $this->name;
     }
-
-    public abstract function havePassword(): bool;
 }

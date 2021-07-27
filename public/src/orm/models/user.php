@@ -28,10 +28,7 @@ class User
 
     public function authenticate(string $password): bool
     {
-        if (password_verify($password, $this->passwordHash)) {
-            return true;
-        }
-        return false;
+        return password_verify($password, $this->passwordHash);
     }
 
     public function getID(): string

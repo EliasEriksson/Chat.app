@@ -1,24 +1,22 @@
-import {
-    getSessionID
-} from "./cookies.js";
 
 
 export class Client {
-    constructor() {
-        let [subDomain, domain, topDomain] = document.location.hostname.split(".");
-        let url;
-        if (!topDomain) {
-            // no top level domain. probably localhost
-            url = `ws://connect.${domain}`;
-        } else {
-            topDomain = topDomain.split("/")[0];
-            url = `ws://connect.${domain}.${topDomain}`;
-        }
-        this.sessionID = getSessionID();
+    constructor(sessionID, roomID, url) {
+        this.url =
+        this.sessionID = sessionID;
+        this.roomID = roomID;
         this.socket = new WebSocket(url);
     }
 
-    open = () => {
+    send = (data) => {
+        this.socket.send(JSON.stringify({
+            "content": data,
+            "roomID": "", // TODO return here after a user can create rooms
+            "session": this.sessionID,
+        }));
+    }
+
+    open = async () => {
         return new Promise((resolve => {
             this.socket.addEventListener("open", (event) => {
                 resolve(event);
@@ -27,22 +25,23 @@ export class Client {
     }
 
     authenticate = async () => {
-        this.socket.send(this.sessionID);
-    }
-
-    send = async(data) => {
+        await this.open();
         this.socket.send(JSON.stringify({
-            "content": data,
-            "roomID": "", // TODO return here after a user can create rooms
-            "session": this.sessionID,
+            "sessionID": this.sessionID,
+            "roomID": this.roomID
         }));
     }
 
-    receive = async() => {
-        return new Promise((resolve => {
-            this.socket.addEventListener("message", (message) => {
-                resolve(message);
-            });
-        }));
+    requestTemplate = async () => {
+        return  await (await fetch("templates/message.html")).text();
+    }
+
+    connect = async () => {
+        let template = (await Promise.allSettled([this.authenticate(), this.requestTemplate()]))[1]
+
+        this.socket.addEventListener("message", (event) => {
+            let html = render(template, JSON.parse(event.data));
+
+        });
     }
 }

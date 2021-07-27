@@ -10,21 +10,20 @@ include_once __DIR__ . "/../../src/url.php";
 requireUserProfileLogin();
 $user = getSessionUser();
 $dbManager = new DbManager();
-$roomID = getPageParameter("../create/");
+$roomID = getPageParameter("/room/create/");
 
-if ($room = $dbManager->getRoom($roomID)) {
-    echo var_dump($room) . "<br>";
-    if ($dbManager->isMember($user, $room)) {
-        redirect("../?$roomID");
-    }
-} else {
-    redirect("../create/");
+if (!($room = $dbManager->getRoom($roomID))) {
+    redirect("/room/create/");
+}
+
+if ($dbManager->isMember($user, $room)) {
+    redirect("/room/?$roomID");
 }
 
 $roomJoinForm = new RoomJoinForm($room);
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if ($roomJoinForm->validateForm()) {
-        redirect("../?$roomID");
+    if ($roomJoinForm->validateForm($dbManager)) {
+        redirect("/room/?$roomID");
     }
 }
 ?>

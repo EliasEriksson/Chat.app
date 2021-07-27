@@ -9,19 +9,19 @@
  * classes will be enabled and disabled by the enabler and disabler.
  */
 
-disableTargets = (targetElements) => {
+const disableTargets = (targetElements) => {
     for (let targetElement of targetElements) {
         targetElement.disabled = false;
     }
 }
 
-enableTargets = (targetElements) => {
+const enableTargets = (targetElements) => {
     for (const targetElement of targetElements) {
         targetElement.disabled = true;
     }
 }
 
-main = () => {
+const main = () => {
     let script = document.currentScript;
     window.addEventListener("load", () => {
         let enableElement = document.getElementById(script.getAttribute("data-enable"));
