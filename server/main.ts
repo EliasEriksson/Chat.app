@@ -1,3 +1,3 @@
-import { Server } from "./server/chat.server.ts";
+import { Server } from "./server/server.ts";
 
 const server = new Server(8080);
