@@ -4,6 +4,10 @@ include_once __DIR__ . "/fields/htmlElement.php";
 include_once __DIR__ . "/fields/submitField.php";
 include_once __DIR__ . "/../flattenArray.php";
 
+# TODO add CSRF protection
+# https://stackoverflow.com/questions/6287903/how-to-properly-add-cross-site-request-forgery-csrf-token-using-php
+
+
 
 abstract class Form extends HTMLElement
 {
