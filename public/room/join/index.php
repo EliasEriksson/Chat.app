@@ -6,12 +6,14 @@ include_once __DIR__ . "/../../src/forms/roomJoinForm.php";
 include_once __DIR__ . "/../../src/session.php";
 include_once __DIR__ . "/../../src/url.php";
 
+
 requireUserProfileLogin();
 $user = getSessionUser();
 $dbManager = new DbManager();
 $roomID = getPageParameter("../create/");
 
 if ($room = $dbManager->getRoom($roomID)) {
+    echo var_dump($room) . "<br>";
     if ($dbManager->isMember($user, $room)) {
         redirect("../?$roomID");
     }

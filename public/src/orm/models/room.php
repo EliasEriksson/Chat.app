@@ -4,8 +4,8 @@ include_once __DIR__ . "/../dbManager.php";
 
 abstract class Room
 {
-    private string $id;
-    private string $name;
+    protected string $id;
+    protected string $name;
 
     public abstract static function fromAssoc(array $roomData): Room;
 
@@ -14,7 +14,6 @@ abstract class Room
         $this->id = $id;
         $this->name = $name;
     }
-
 
     public function getID(): string
     {

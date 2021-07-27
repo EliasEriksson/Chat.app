@@ -40,7 +40,7 @@ abstract class Form extends HTMLElement
     }
 
 
-    public abstract function validateForm(): ?object;
+    public abstract function validateForm(): object|bool|null;
 
     protected function validateFields(): bool
     {

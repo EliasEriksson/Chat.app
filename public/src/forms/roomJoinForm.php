@@ -17,12 +17,27 @@ class RoomJoinForm extends Form {
         ], new SubmitField("room-join-submit", "Join $roomName"));
     }
 
-    public function validateForm(): ?object
+    public function validateForm(DbManager $dbManager = null): bool
     {
+        $user = getSessionUser();
+
         if (!$this->validateFields()) {
-            return null;
+            return false;
         }
-        echo "clicked" . "<br>";
-        return null;
+
+        $roomID = $this->room->getID();
+        if ($this->room->havePassword()) {
+            redirect("authenticate/?$roomID");
+        }
+
+        if (!$dbManager) {
+            $dbManager = new DbManager();
+        }
+
+        if ($dbManager->createMembership($this->room, $user)) {
+            return true;
+        }
+
+        return false;
     }
 }
