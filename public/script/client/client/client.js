@@ -1,18 +1,21 @@
-
+import {
+    render
+} from "../xrender.js";
 
 export class Client {
-    constructor(sessionID, roomID, url) {
-        this.url =
+    constructor(sessionID, roomID, url, chatFeedElement) {
+        this.url = url;
         this.sessionID = sessionID;
         this.roomID = roomID;
         this.socket = new WebSocket(url);
+        this.chatFeedElement = chatFeedElement;
     }
 
     send = (data) => {
         this.socket.send(JSON.stringify({
             "content": data,
-            "roomID": "", // TODO return here after a user can create rooms
-            "session": this.sessionID,
+            "roomID": this.roomID,
+            "session": this.sessionID
         }));
     }
 
@@ -25,7 +28,6 @@ export class Client {
     }
 
     authenticate = async () => {
-        await this.open();
         this.socket.send(JSON.stringify({
             "sessionID": this.sessionID,
             "roomID": this.roomID
@@ -33,7 +35,7 @@ export class Client {
     }
 
     requestTemplate = async () => {
-        return  await (await fetch("templates/message.html")).text();
+        return await (await fetch("templates/message.html")).text();
     }
 
     connect = async () => {
@@ -41,7 +43,7 @@ export class Client {
 
         this.socket.addEventListener("message", (event) => {
             let html = render(template, JSON.parse(event.data));
-
+            this.chatFeedElement.appendChild(html);
         });
     }
 }

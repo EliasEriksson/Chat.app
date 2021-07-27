@@ -29,10 +29,15 @@ if (!$dbManager->isMember($user, $room)) {
     <title>Document</title>
 </head>
 <body>
+<template>
+    <div>test</div>
+</template>
 <section id="chat"></section>
 <script src="/script/client/main.js"
         data-roomID="<?= $roomID ?>"
-        data-chatElementID="chat">
+        data-chatFeedElementID="chat"
+        data-chatBoxElementID=""
+        data-chatSendElementID="">
 </script>
 </body>
 </html>

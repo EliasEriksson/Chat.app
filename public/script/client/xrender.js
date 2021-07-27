@@ -1,9 +1,11 @@
-function render(template, context) {
+export function render(template, context) {
     for (let variable of context) {
         template = template.replace(new RegExp(`{{\\s*${variable}\\s*}}`, "gm"), context[variable]);
     }
     if (template.match(/{{\s*[^}]\s*}}/)) {
         return null;
     }
-    return template;
+    let divElement = document.createElement("div");
+    divElement.innerHTML = template;
+    return divElement.firstChild;
 }
