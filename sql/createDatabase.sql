@@ -33,7 +33,6 @@ CREATE FUNCTION bin_to_uuid(_bin BINARY(16))
 DELIMITER ;
 
 
-# TODO implement binary16 instead of char36 https://www.mysqltutorial.org/mysql-uuid/
 create table users
 (
     id           binary(16) unique   not null,
@@ -42,7 +41,7 @@ create table users
 
     constraint usersEmail check ( email regexp '^[^@]+@[^.]+\..+' and length(email) >= 5),
     constraint usersPasswordHash check ( length(passwordHash) > 0 ),
-    constraint usersPK primary key (id)
+    constraint primary key (id)
 );
 
 create table userProfiles
@@ -52,7 +51,7 @@ create table userProfiles
     avatar   varchar(100) default 'media/assets/defaultAvatar.png',
 
     constraint userProfilesAvatar check ( avatar rlike '(^media/users/)|(^media/assets/defaultAvatar.png$)' ),
-    constraint userProfilesPK primary key (userID)
+    constraint primary key (userID)
 );
 
 create table sessions
@@ -60,7 +59,7 @@ create table sessions
     userID    binary(16) unique not null,
     sessionID varchar(128)      not null,
     constraint sessionsSessionID check ( sessionID rlike '^[-,a-zA-Z0-9]{1,128}$'),
-    constraint sessionsPK primary key (userID)
+    constraint primary key (userID)
 );
 
 create table rooms
@@ -69,7 +68,7 @@ create table rooms
     name         varchar(255)      not null,
     passwordHash varchar(255),
 
-    constraint roomPK primary key (id)
+    constraint primary key (id)
 );
 
 create table members
@@ -79,7 +78,7 @@ create table members
     roomID binary(16)         not null,
 
     constraint uniqueMembership unique key (userID, roomID),
-    constraint membersPK primary key (id)
+    constraint primary key (id)
 );
 
 create table messages
@@ -90,7 +89,7 @@ create table messages
     postDate timestamp default current_timestamp,
     content  text              not null,
 
-    constraint messagesID primary key (id)
+    constraint primary key (id)
 );
 
 create table oldMessages
@@ -101,7 +100,7 @@ create table oldMessages
     postDate timestamp default current_timestamp,
     content  text              not null,
 
-    constraint messagesID primary key (id)
+    constraint primary key (id)
 );
 
 alter table userProfiles
