@@ -13,6 +13,7 @@ import {
 import {
     Session
 } from "./models/sessions.ts";
+import {Room} from "./models/room.ts";
 
 export class DbManager {
     private client: Client;
@@ -20,54 +21,55 @@ export class DbManager {
         this.client = new Client();
     }
 
-    async connect() {
+     connect = async () => {
         const credentials: {
             hostname: string, username: string, db: string, password: string
         } = JSON.parse(await Deno.readTextFile(".credentials.json"));
         await this.client.connect(credentials);
     }
 
-    async getUser(id: string): Promise<User|null> {
-        let userData = (await this.client.query(
-            "select * from users where id = ?;"
-            , [id]
+    getRoom = async (roomID: string): Promise<Room|null> => {
+        let roomData = (await this.client.query(
+            "select bin_to_uuid(id) as id, name \
+             from rooms \
+             where id = ?;",
+            [roomID]
         ))[0];
-        if (userData) {
-            return User.fromObject(userData);
+        if (roomData) {
+            return Room.fromJSON(roomData);
         }
         return null;
     }
 
-    async getUserFromSession(sessionID: string) {
+    getUserRoom = async (user: User) => {
+        let roomData = await this.client.query(
+            "select from rooms"
+        )
+    }
+
+    getUserFromSession = async (sessionID: string): Promise<User|null> => {
         let userData = (await this.client.query(
-            "select * from users where id = (select userID from sessions where sessionID = ?);",
+            "select bin_to_uuid(id) as id, email, passwordHash \
+             from users \
+             where id = (select userID from sessions where sessionID = ?);",
             [sessionID]
         ))[0];
         if (userData) {
-            console.log(userData)
             return User.fromObject(userData)
         }
+        return null;
     }
 
-    async getUserProfile(user: User): Promise<UserProfile|null> {
+    getUserProfile = async (user: User): Promise<UserProfile|null> => {
         let userProfileData = (await this.client.query(
-            "select * from userProfiles where userID = ?;",
+            "select bin_to_uuid(userID) as userID, username, avatar \
+             from userProfiles \
+             where userID = uuid_to_bin(?);",
             [user.getID()]
         ))[0];
         if (userProfileData) {
             return UserProfile.fromObject(userProfileData);
         }
         return null
-    }
-
-    async getSession(user: User): Promise<Session|null> {
-        let sessionData = (await this.client.query(
-            "select * from sessions where userID = ?",
-            [user.getID()]
-        ))[0];
-        if (sessionData) {
-            return Session.fromObject(sessionData);
-        }
-        return null;
     }
 }

@@ -7,7 +7,7 @@ import {
 
 
 const main = () => {
-    const script = document.currentScript;
+    const script = document.getElementById("client-module");
     let [subDomain, domain, topDomain] = document.location.hostname.split(".");
     let url;
     if (!topDomain) {

@@ -196,10 +196,11 @@ class DbManager
         $sessionID = session_id();
         $query = $this->dbConn->prepare(
             "insert into sessions (userID, sessionID) 
-                   values (uuid_to_bin(?), uuid_to_bin(?)) 
-                   on duplicate key update sessionID = uuid_to_bin(?);"
+                   values (uuid_to_bin(?), ?) 
+                   on duplicate key update sessionID = ?;"
         );
         if ($query->bind_param("sss", $id, $sessionID, $sessionID) && $query->execute()) {
+            echo "queried successfully" . "<br>";
             return true;
         }
         return false;

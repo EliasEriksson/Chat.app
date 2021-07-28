@@ -21,15 +21,13 @@ import {
 export class Server {
     private socket: WebSocketServer;
     private clients: Set<Client>;
-    private dbManager: DbManager|null;
+    private dbManager: DbManager;
 
     constructor(port: number) {
         this.clients = new Set<Client>();
         this.socket = new WebSocketServer(port);
-        this.dbManager = null;
-        this.socket.addListener("connection", this.handleConnection);
-        this.socket.addListener("close", this.close_connection);
-        console.log("waiting for connections...")
+        this.dbManager = new DbManager();
+
     }
 
     private getDbManager = async (): Promise<DbManager> => {
@@ -53,18 +51,13 @@ export class Server {
          return [null, null];
     }
 
-    private handleConnection = async (ws: WebSocketClient) =>{
-        console.log("somone connected.");
-        let client = new Client(ws);
-        let data = await client.receive();
-        console.log(`authenticating with session ${data}`);
-        let user = await (await this.getDbManager()).getUserFromSession(data);
-        if (user) /* AUTHENTICATED */ {
-            let userProfile = await (await this.getDbManager()).getUserProfile(user);
-            console.log(`Welcome ${userProfile?.getUsername()}!`);
-        } else {
-            console.log("You are not allowed...");
-        }
+    private handleConnection = async (client: WebSocketClient) =>{
+        client.addListener("message", async (message: string) => {
+            console.log(message)
+            let messageData: {"sessionID": string, roomID: string} = JSON.parse(message);
+            let user = await (await this.getDbManager()).getUserFromSession(messageData["sessionID"]);
+
+        });
     }
 
     async close_connection(client: Client, code: number) {
@@ -72,5 +65,12 @@ export class Server {
         // this.clients.delete(client);
         console.log("connection lost.")
         console.log()
+    }
+
+    public connect = async () => {
+        await this.dbManager.connect();
+        this.socket.addListener("connection", this.handleConnection);
+        this.socket.addListener("close", this.close_connection);
+        console.log("waiting for connections...")
     }
 }
