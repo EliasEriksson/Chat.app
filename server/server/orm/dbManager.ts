@@ -41,10 +41,19 @@ export class DbManager {
         return null;
     }
 
-    getUserRoom = async (user: User) => {
-        let roomData = await this.client.query(
-            "select from rooms"
-        )
+    getUserRooms = async (user: User): Promise<Room[]> => {
+        let roomData: {"id": string, "name": string}[] = await this.client.query(
+            "select roomID as id, name \
+             from members join rooms on members.roomID = rooms.id \
+             where members.userID = uuid_to_bin(?);",
+            [user.getID()]
+        );
+        if (roomData.length) {
+            return roomData.map((rd) => {
+                return new Room(rd["id"], rd["name"]);
+            })
+        }
+        return [];
     }
 
     getUserFromSession = async (sessionID: string): Promise<User|null> => {

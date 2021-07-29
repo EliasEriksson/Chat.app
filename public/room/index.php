@@ -30,7 +30,7 @@ if (!$dbManager->isMember($user, $room)) {
 </head>
 <body>
 <textarea id="chat-box"></textarea>
-<button id="chat-send"></button>
+<button id="chat-send">send</button>
 <section id="chat-feed"></section>
 
 <script id="client-module"

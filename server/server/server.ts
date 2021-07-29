@@ -17,54 +17,71 @@ import {
 import {
     UserProfile
 } from "./orm/models/userProfiles.ts";
+import {UnauthorizedError} from "./errors.ts";
+
+import {
+    Room
+} from "./orm/models/room.ts";
+
+import {
+    Queue
+} from "https://deno.land/x/async/mod.ts";
+
 
 export class Server {
     private socket: WebSocketServer;
-    private clients: Set<Client>;
+    private rooms: Map<Room, Set<WebSocketClient>>;
     private dbManager: DbManager;
 
     constructor(port: number) {
-        this.clients = new Set<Client>();
+        this.rooms = new Map<Room, Set<WebSocketClient>>();
         this.socket = new WebSocketServer(port);
         this.dbManager = new DbManager();
+    }
+
+    private authenticate = async (client: Client) => {
+        // let messageData: string = await client.receive();
 
     }
 
-    private getDbManager = async (): Promise<DbManager> => {
-        if (!this.dbManager) {
-            this.dbManager = new DbManager();
-            await this.dbManager.connect();
-            return this.dbManager;
-        }
-        return this.dbManager;
+    private handleConnection = async (wsc: WebSocketClient) => {
+        let client = new Client(wsc);
+        console.log("starting timeout")
+        console.log("test")
+        console.log("counting")
+        console.log("stopped counting")
+        let message = await client.receive();
+        console.log(message);
+        console.log("counting")
+        console.log("stopped counting");
+        message = await client.receive();
+        console.log(message);
+
+
+
+        // client.addListener("message", async (message: string) => {
+        //     let messageData: { "sessionID": string, roomID: string } = JSON.parse(message);
+        //     let user = await this.dbManager.getUserFromSession(messageData["sessionID"]);
+        //     if (!user) {
+        //         // authentication failed 401 unauthorized
+        //         await this.close_connection(client, 401);
+        //         return;
+        //     }
+        //     let rooms = await this.dbManager.getUserRooms(user);
+        //     for (const room of rooms) {
+        //         if (!this.rooms.has(room)) {
+        //             this.rooms.set(room, new Set<WebSocketClient>());
+        //         }
+        //         // @ts-ignore
+        //         this.rooms.get(room).add(client);
+        //     }
+        // });
+        // client.addListener("message", this.authenticate);
     }
 
-    private authenticate = async (sessionID: string): Promise<[User|null, UserProfile|null]> => {
-         let user = await (await this.getDbManager()).getUserFromSession(sessionID);
-         if (user) {
-             let userProfile = await (await this.getDbManager()).getUserProfile(user);
-             if (userProfile) {
-                 return [user, userProfile]
-             }
-             return [user, null];
-         }
-         return [null, null];
-    }
-
-    private handleConnection = async (client: WebSocketClient) =>{
-        client.addListener("message", async (message: string) => {
-            console.log(message)
-            let messageData: {"sessionID": string, roomID: string} = JSON.parse(message);
-            let user = await (await this.getDbManager()).getUserFromSession(messageData["sessionID"]);
-
-        });
-    }
-
-    async close_connection(client: Client, code: number) {
+    async close_connection(client: WebSocketClient, code: number): Promise<never> {
         await client.close(code);
-        // this.clients.delete(client);
-        console.log("connection lost.")
-        console.log()
+        throw new UnauthorizedError(code.toString());
     }
 
     public connect = async () => {
