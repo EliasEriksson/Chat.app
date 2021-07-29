@@ -23,10 +23,6 @@ import {
     Room
 } from "./orm/models/room.ts";
 
-import {
-    Queue
-} from "https://deno.land/x/async/mod.ts";
-
 
 export class Server {
     private socket: WebSocketServer;
@@ -46,14 +42,9 @@ export class Server {
 
     private handleConnection = async (wsc: WebSocketClient) => {
         let client = new Client(wsc);
-        console.log("starting timeout")
-        console.log("test")
-        console.log("counting")
-        console.log("stopped counting")
+
         let message = await client.receive();
         console.log(message);
-        console.log("counting")
-        console.log("stopped counting");
         message = await client.receive();
         console.log(message);
 

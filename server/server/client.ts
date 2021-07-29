@@ -1,27 +1,28 @@
-import {WebSocketClient} from "https://deno.land/x/websocket@v0.1.1/mod.ts";
+import {
+    WebSocketClient
+} from "https://deno.land/x/websocket@v0.1.1/mod.ts";
 
+import {
+    Queue
+} from "https://deno.land/x/async/mod.ts";
 
 export class Client {
     private socket: WebSocketClient;
-    private messages: string[];
+    private messageQueue: Queue<string>;
 
     constructor(ws: WebSocketClient) {
         this.socket = ws;
-        this.messages = [];
-        this.socket.addListener("message", (message: string) => {
-            this.messages.push(message);
-        })
+        this.messageQueue = new Queue();
+        this.socket.addListener("message", async (message: string) => {
+            await this.messageQueue.put(message);
+        });
     }
 
-    async send(data: string) {
+    send = (data: string) => {
         this.socket.send(data);
     }
 
     receive = async () => {
-
-    }
-
-    async close(code: number) {
-        return await this.socket.close(code);
+        return await this.messageQueue.get();
     }
 }

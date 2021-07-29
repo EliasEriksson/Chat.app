@@ -6,18 +6,22 @@ import {
 } from "./client/cookies.js";
 
 
-const main = () => {
-    const script = document.getElementById("client-module");
+const getConnectionURL = () => {
     let [subDomain, domain, topDomain] = document.location.hostname.split(".");
-    let url;
     if (!topDomain) {
         // no top level domain. probably localhost
-        url = `ws://connect.${domain}`;
-    } else {
-        topDomain = topDomain.split("/")[0];
-        url = `ws://connect.${domain}.${topDomain}`;
+        return `ws://connect.${domain}`;
     }
+    topDomain = topDomain.split("/")[0];
+    return `ws://connect.${domain}.${topDomain}`;
+}
+
+
+const main = () => {
+    const script = document.getElementById("client-module");
+
     window.addEventListener("load", async () => {
+        let url = getConnectionURL();
         let roomID = script.getAttribute("data-roomID");
         let sessionID = getSessionID();
         let chatFeedElement = document.getElementById(script.getAttribute("data-chatFeedElementID"));
@@ -25,14 +29,12 @@ const main = () => {
         let chatSendElement = document.getElementById(script.getAttribute("data-chatSendElementID"));
 
         const client = new Client(sessionID, roomID, url, chatFeedElement);
-        await client.open();
 
-        chatSendElement.addEventListener("click", ()=> {
+        chatSendElement.addEventListener("click", () => {
             let message = chatBoxElement.value;
             client.send(message);
             chatBoxElement.value = "";
         });
-
         await client.connect();
     });
 }

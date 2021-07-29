@@ -17,9 +17,7 @@ if (!($room = $dbManager->getRoom($roomID))) {
 
 if (!$dbManager->isMember($user, $room)) {
     redirect("/room/join/?$roomID");
-}
-
-?>
+} ?>
 <!doctype html>
 <html lang="en">
 <head>
