@@ -8,9 +8,7 @@ import {
 
 const wait = async () => {
     return new Promise(resolve => {
-        setTimeout(() => {
-            resolve();
-        });
+        setTimeout(() =>  resolve());
     });
 }
 
@@ -27,9 +25,7 @@ export class Client {
         this.socket = new WebSocket(this.url);
         this.socket.addEventListener("open", () => {
             this._open = true;
-            setInterval(async () => {
-                this.ping();
-            }, 30000);
+            setInterval(async () => this.ping(), 30000);
         });
         this.socket.addEventListener("message", (event) => {
             let message = JSON.parse(event.data);

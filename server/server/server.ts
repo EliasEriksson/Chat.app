@@ -57,7 +57,6 @@ export class Server {
         return [user, room];
     }
 
-
     private serve = async (client: Client, user: User, room: Room) => {
         let message: { [key: string]: string };
         while (message = await client.receive()) {
@@ -77,7 +76,6 @@ export class Server {
     }
 
     private handleConnection = async (wsc: WebSocketClient) => {
-
         let client = new Client(wsc);
 
         let [user, room] = await this.authenticate(client);
