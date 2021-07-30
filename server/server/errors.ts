@@ -7,3 +7,6 @@ class ChatError extends Error {
 
 
 export class UnauthorizedError extends ChatError {}
+
+
+export class ConnectionAborted extends ChatError {}

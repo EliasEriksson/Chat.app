@@ -15,6 +15,7 @@ import {
 } from "./orm/models/user.ts";
 
 import {
+    ConnectionAborted,
     UnauthorizedError
 } from "./errors.ts";
 
@@ -57,16 +58,7 @@ export class Server {
     }
 
 
-    private handleConnection = async (wsc: WebSocketClient) => {
-        let client = new Client(wsc);
-        let [user, room] = await this.authenticate(client);
-        console.log(user.getSessionID())
-
-        if (!this.rooms.has(room.getID())) {
-            this.rooms.set(room.getID(), new Set<Client>());
-        }
-        this.rooms.get(room.getID())!.add(client);
-        console.log(this.rooms);
+    private serve = async (client: Client, user: User, room: Room) => {
         let message: { [key: string]: string };
         while (message = await client.receive()) {
             if (message.ping) {
@@ -80,6 +72,40 @@ export class Server {
                     "username": user.getUsername(),
                     "avatar": user.getAvatar(),
                 });
+            }
+        }
+    }
+
+    private handleConnection = async (wsc: WebSocketClient) => {
+
+        let client = new Client(wsc);
+
+        let [user, room] = await this.authenticate(client);
+        console.log(user.getSessionID())
+
+        if (!this.rooms.has(room.getID())) {
+            this.rooms.set(room.getID(), new Set<Client>());
+        }
+        this.rooms.get(room.getID())!.add(client);
+        console.log(this.rooms);
+
+        try {
+            await this.serve(client, user, room);
+        } catch (error) {
+            if (error instanceof ConnectionAborted) {
+                if (this.rooms.has(room.getID())) {
+                    let clientRoom = this.rooms.get(room.getID())!
+                    if (clientRoom.has(client)) {
+                        clientRoom.delete(client);
+                    }
+                    if (!clientRoom.size) {
+                        this.rooms.delete(room.getID());
+                    }
+                }
+                console.log(`user ${user.getID()} left room ${room.getID()}`)
+                console.log(this.rooms);
+            } else {
+                console.log(error);
             }
         }
     }
