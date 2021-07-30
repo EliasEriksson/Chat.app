@@ -4,35 +4,31 @@ import {
 
 import {
     User
-} from "./models/users.ts";
+} from "./models/user.ts";
 
 import {
-    UserProfile
-} from "./models/userProfiles.ts";
-
-import {
-    Session
-} from "./models/sessions.ts";
-import {Room} from "./models/room.ts";
+    Room
+} from "./models/room.ts";
 
 export class DbManager {
     private client: Client;
+
     constructor() {
         this.client = new Client();
     }
 
-     connect = async () => {
+    connect = async () => {
         const credentials: {
             hostname: string, username: string, db: string, password: string
         } = JSON.parse(await Deno.readTextFile(".credentials.json"));
         await this.client.connect(credentials);
     }
 
-    getRoom = async (roomID: string): Promise<Room|null> => {
+    getRoom = async (roomID: string): Promise<Room | null> => {
         let roomData = (await this.client.query(
             "select bin_to_uuid(id) as id, name \
              from rooms \
-             where id = ?;",
+             where id = uuid_to_bin(?);",
             [roomID]
         ))[0];
         if (roomData) {
@@ -41,44 +37,21 @@ export class DbManager {
         return null;
     }
 
-    getUserRooms = async (user: User): Promise<Room[]> => {
-        let roomData: {"id": string, "name": string}[] = await this.client.query(
-            "select roomID as id, name \
-             from members join rooms on members.roomID = rooms.id \
-             where members.userID = uuid_to_bin(?);",
-            [user.getID()]
-        );
-        if (roomData.length) {
-            return roomData.map((rd) => {
-                return new Room(rd["id"], rd["name"]);
-            })
-        }
-        return [];
-    }
-
-    getUserFromSession = async (sessionID: string): Promise<User|null> => {
+    getUserFromSession = async (sessionID: string): Promise<User | null> => {
         let userData = (await this.client.query(
-            "select bin_to_uuid(id) as id, email, passwordHash \
-             from users \
-             where id = (select userID from sessions where sessionID = ?);",
+            "select bin_to_uuid(users.id) as id, email, username, avatar \
+             from users join userProfiles on users.id = userProfiles.userID \
+             where users.id = ( \
+                select userID \
+                from sessions \
+                where sessionID = ? \
+             );",
             [sessionID]
         ))[0];
         if (userData) {
+            userData["sessionID"] = sessionID;
             return User.fromObject(userData)
         }
         return null;
-    }
-
-    getUserProfile = async (user: User): Promise<UserProfile|null> => {
-        let userProfileData = (await this.client.query(
-            "select bin_to_uuid(userID) as userID, username, avatar \
-             from userProfiles \
-             where userID = uuid_to_bin(?);",
-            [user.getID()]
-        ))[0];
-        if (userProfileData) {
-            return UserProfile.fromObject(userProfileData);
-        }
-        return null
     }
 }

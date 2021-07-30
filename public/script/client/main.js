@@ -35,6 +35,7 @@ const main = () => {
             client.send(message);
             chatBoxElement.value = "";
         });
+
         await client.connect();
     });
 }

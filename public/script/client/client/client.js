@@ -3,8 +3,17 @@ import {
 } from "../xrender.js";
 
 import {
-    Queue
-} from "./queue.js";
+    UnauthorizedError
+} from "./errors.js";
+
+const wait = async () => {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        });
+    });
+}
+
 
 export class Client {
     constructor(sessionID, roomID, url, chatFeedElement) {
@@ -12,18 +21,35 @@ export class Client {
         this.sessionID = sessionID;
         this.roomID = roomID;
         this.chatFeedElement = chatFeedElement;
-        this.messageQueue = new Queue();
+        this.messageQueue = [];
+        this._open = false;
+
+        this.socket = new WebSocket(this.url);
+        this.socket.addEventListener("open", () => {
+            this._open = true;
+            setInterval(async () => {
+                this.ping();
+            }, 30000);
+        });
+        this.socket.addEventListener("message", (event) => {
+            let message = JSON.parse(event.data);
+            if (message.ping) {
+
+            } else {
+                this.messageQueue.push(message);
+            }
+        });
     }
 
     open = async () => {
-        return new Promise((resolve => {
-            this.socket = new WebSocket(this.url);
-            this.socket.addEventListener("message", (event) => {
-                this.messageQueue.put(event.data);
-            });
-            this.socket.addEventListener("open", () => {
-                resolve();
-            });
+        while (!this._open) {
+            await wait();
+        }
+    }
+
+    ping = () => {
+        this.socket.send(JSON.stringify({
+            "ping": "pong"
         }));
     }
 
@@ -36,8 +62,11 @@ export class Client {
     }
 
     receive = async () => {
-        let json = await this.messageQueue.get();
-        return JSON.parse(json);
+        let message;
+        while (!(message = this.messageQueue.shift())) {
+            await wait();
+        }
+        return message;
     }
 
     authenticate = async () => {
@@ -46,7 +75,12 @@ export class Client {
             "sessionID": this.sessionID,
             "roomID": this.roomID
         }));
-        await this.receive();
+
+        let response = await this.receive();
+        if (response.status === 200) {
+            return;
+        }
+        throw new UnauthorizedError();
     }
 
     requestTemplate = async () => {
@@ -54,12 +88,23 @@ export class Client {
     }
 
     connect = async () => {
-        let template = (await Promise.allSettled([this.authenticate(), this.requestTemplate()]))[1]
-
-        let message, html;
-        while (message = await this.receive()) {
-            html = render(template, message.content);
-            this.chatFeedElement.appendChild(html);
+        try {
+            await this.authenticate();
+            let template = await this.requestTemplate();
+            let message, html;
+            while (message = await this.receive()) {
+                html = render(template, {
+                    "user": message.username,
+                    "content": message.content
+                });
+                this.chatFeedElement.appendChild(html);
+            }
+        } catch (error) {
+            if (error instanceof UnauthorizedError) {
+                this.socket.close(401);
+            } else {
+                this.socket.close(503);
+            }
         }
     }
 }
