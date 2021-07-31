@@ -19,8 +19,6 @@ export class HistoryLoader {
         this.chatFeedElement = chatFeedElement;
         this.template = template;
         this.lastRendered = getFirstHtmlNode(chatFeedElement).getAttribute("data-id");
-        console.log("bellow is last rendered")
-        console.log(this.lastRendered)
         this.loading = false;
         this.fullyConsumed = false;
     }

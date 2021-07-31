@@ -73,10 +73,17 @@ export class Server {
             let message = `User ${user.getID()} is not a member of the room ${roomID}`;
             throw new UnauthorizedError(message);
         }
+        try {
+            client.send({
+                "status": 200
+            });
+        } catch (error) {
+            if (error instanceof Deno.errors.ConnectionReset) {
+                console.log("caught error")
+            }
+            throw error;
+        }
 
-        client.send({
-            "status": 200
-        });
         return [user, room];
     }
 
@@ -118,8 +125,10 @@ export class Server {
                 || error instanceof Deno.errors.ConnectionAborted
                 || error instanceof Deno.errors.ConnectionRefused
                 || error instanceof Deno.errors.NotConnected) {
+                console.log("an error was caught.")
                 return;
             }
+            console.log("an error was not caught")
             throw error;
         }
 
