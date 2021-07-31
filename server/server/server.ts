@@ -83,6 +83,9 @@ export class Server {
                 console.log(`${user.getID()} pinged.`)
                 continue;
             }
+            if (!(await this.dbManager.createMessage(user, room, message.content))) {
+                continue;
+            }
             for (let roomClient of this.rooms.get(room.getID())!) {
                 roomClient.send({
                     "content": message.content,
