@@ -15,13 +15,17 @@ import {
 } from "./orm/models/user.ts";
 
 import {
-    ConnectionAborted,
-    UnauthorizedError
-} from "./errors.ts";
+    Message
+} from "./orm/models/message.ts";
 
 import {
     Room
 } from "./orm/models/room.ts";
+
+import {
+    ConnectionAborted,
+    UnauthorizedError
+} from "./errors.ts";
 
 
 export class Server {
@@ -77,21 +81,28 @@ export class Server {
     }
 
     private serve = async (client: Client, user: User, room: Room) => {
-        let message: { [key: string]: string };
-        while (message = await client.receive()) {
-            if (message.ping) {
+        let request: { [key: string]: string };
+        let message: Message|null
+        while (request = await client.receive()) {
+            if (request.ping) {
                 console.log(`${user.getID()} pinged.`)
                 continue;
             }
-            if (!(await this.dbManager.createMessage(user, room, message.content))) {
+
+            message = await this.dbManager.createMessage(user, room, request.content);
+            if (!message) {
                 continue;
             }
+
             for (let roomClient of this.rooms.get(room.getID())!) {
                 roomClient.send({
-                    "content": message.content,
+                    "id": message.getID(),
                     "userID": user.getID(),
+                    "email": user.getEmail(),
                     "username": user.getUsername(),
                     "avatar": user.getAvatar(),
+                    "content": request.content,
+                    "postDate": message.getPostDate()
                 });
             }
         }

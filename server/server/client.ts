@@ -4,8 +4,6 @@ import {
 import {ConnectionAborted} from "./errors.ts";
 
 
-
-
 const wait = async (): Promise<void> => {
     return new Promise(resolve => {
         setTimeout(() => resolve(), 10);

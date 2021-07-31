@@ -1,37 +1,60 @@
 <?php
 
 
+use JetBrains\PhpStorm\ArrayShape;
+
 include_once __DIR__ . "/../dbManager.php";
+include_once __DIR__ . "/user.php";
+include_once __DIR__ . "/userProfile.php";
+include_once __DIR__ . "/room.php";
 
 
 class Message
 {
     private string $id;
-    private string $userID;
-    private string $roomID;
-    private DateTime $postDate;
+    private User $user;
+    private UserProfile $userProfile;
+    private Room $room;
+    private int $postDate;
     private string $content;
 
 
     public static function fromAssoc(array $messageData): Message
     {
-
         return new Message(
             $messageData["id"],
-            $messageData["userID"],
-            $messageData["roomID"],
+            new User($messageData["userID"], $messageData["email"], $messageData["passwordHash"]),
+            new UserProfile($messageData["userID"], $messageData["username"], $messageData["avatar"]),
+            new PublicRoom($messageData["roomID"], $messageData["roomName"]),
             $messageData["postDate"],
             $messageData["content"]
         );
     }
 
-    public function __construct(string $id, string $userID, string $roomID, string $postDate, string $content)
+    public function getAllAsAssoc(): array
     {
-        $format = "Y-m-d H:i:s";
+        return [
+            "id" => $this->id,
+            "userID" => $this->user->getID(),
+            "email" => $this->user->getEmail(),
+            "username" => $this->userProfile->getUsername(),
+            "avatar" => $this->userProfile->getAvatar(),
+            "content" => $this->content,
+            "postDate" => $this->postDate
+        ];
+    }
+
+    public function __construct(
+        string $id, User $user,
+        UserProfile $userProfile, Room $room,
+        int $postDate, string $content
+    )
+    {
         $this->id = $id;
-        $this->userID = $userID;
-        $this->roomID = $roomID;
-        $this->postDate = DateTime::createFromFormat($format, $postDate, new DateTimeZone("utc"));
+        $this->user = $user;
+        $this->userProfile = $userProfile;
+        $this->room = $room;
+        $this->postDate = $postDate;
         $this->content = $content;
     }
 
@@ -40,17 +63,22 @@ class Message
         return $this->id;
     }
 
-    public function getUserID(): string
+    public function getUser(): User
     {
-        return $this->userID;
+        return $this->user;
     }
 
-    public function getRoomID(): string
+    public function getUserProfile(): UserProfile
     {
-        return $this->roomID;
+        return $this->userProfile;
     }
 
-    public function getPostDate(): DateTime|bool
+    public function getRoom(): Room
+    {
+        return $this->room;
+    }
+
+    public function getPostDate(): DateTime
     {
         return $this->postDate;
     }

@@ -19,6 +19,7 @@ include_once __DIR__ . "/models/message.php";
 class DbManager
 {
     private mysqli $dbConn;
+    private int $pageLimit;
 
     function __construct()
     {
@@ -31,6 +32,7 @@ class DbManager
         if ($this->dbConn->connect_errno !== 0) {
             die("Could not connect. Error: " . $this->dbConn->connect_errno . " " . $this->dbConn->connect_error);
         }
+        $this->pageLimit = 5;
     }
 
     /**
@@ -266,6 +268,53 @@ class DbManager
             }
         }
         return null;
+    }
+
+    public function getMessages(Room $room, string $before = null): array
+    {
+        $roomID = $room->getID();
+        if ($before) {
+            $query = $this->dbConn->prepare(
+                "select bin_to_uuid(mt.id) as id, bin_to_uuid(users.id) as userID, 
+                         bin_to_uuid(rooms.id) as roomID, email, users.passwordHash as passwordHash, 
+                         username, avatar, name as roomName, unix_timestamp(postDate) as postDate, content 
+                       from (select * from messages 
+                       where roomID = uuid_to_bin(?) 
+                         and postDate < (select postDate from messages where id=uuid_to_bin(?))
+                       order by postDate desc limit ?) as mt 
+                         join users on mt.userID = users.id 
+                         join userProfiles on users.id = userProfiles.userID 
+                         join rooms on mt.roomID = rooms.id 
+                       order by postDate;"
+            );
+            if (!$query->bind_param("ssi", $roomID, $before, $this->pageLimit) || !$query->execute()) {
+                return [];
+            }
+        } else {
+            $query = $this->dbConn->prepare(
+                "select bin_to_uuid(mt.id) as id, bin_to_uuid(users.id) as userID, 
+                         bin_to_uuid(rooms.id) as roomID, email, users.passwordHash as passwordHash, 
+                         username, avatar, name as roomName, unix_timestamp(postDate) as postDate, content 
+                       from (select * from messages 
+                       where roomID = uuid_to_bin(?) 
+                       order by postDate desc limit ?) as mt 
+                         join users on mt.userID = users.id 
+                         join userProfiles on users.id = userProfiles.userID 
+                         join rooms on mt.roomID = rooms.id 
+                       order by postDate;"
+            );
+            if (!$query->bind_param("si", $roomID, $this->pageLimit) || !$query->execute()) {
+                return [];
+            }
+        }
+        if (($result = $query->get_result()) && $result->num_rows) {
+            $messages = [];
+            while ($messageData = $result->fetch_assoc()) {
+                array_push($messages, Message::fromAssoc($messageData));
+            }
+            return $messages;
+        }
+        return [];
     }
 
     public function isMember(User $user, Room $room): bool

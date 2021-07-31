@@ -8,24 +8,25 @@ import {
 
 const wait = async () => {
     return new Promise(resolve => {
-        setTimeout(() =>  resolve());
+        setTimeout(resolve, 10);
     });
 }
 
 
 export class Client {
-    constructor(sessionID, roomID, url, chatFeedElement) {
+    constructor(sessionID, roomID, url, chatFeedElement, template) {
         this.url = url;
         this.sessionID = sessionID;
         this.roomID = roomID;
         this.chatFeedElement = chatFeedElement;
+        this.template = template;
         this.messageQueue = [];
         this._open = false;
 
         this.socket = new WebSocket(this.url);
         this.socket.addEventListener("open", () => {
             this._open = true;
-            setInterval(async () => this.ping(), 30000);
+            setInterval(this.ping, 30000);
         });
         this.socket.addEventListener("message", (event) => {
             let message = JSON.parse(event.data);
@@ -79,20 +80,13 @@ export class Client {
         throw new UnauthorizedError();
     }
 
-    requestTemplate = async () => {
-        return await (await fetch("/templates/message.html")).text();
-    }
-
     connect = async () => {
         try {
             await this.authenticate();
-            let template = await this.requestTemplate();
-            let message, html;
-            while (message = await this.receive()) {
-                html = render(template, {
-                    "user": message.username,
-                    "content": message.content
-                });
+            let response, html;
+            while (response = await this.receive()) {
+                console.log(response);
+                html = render(this.template, response);
                 this.chatFeedElement.appendChild(html);
             }
         } catch (error) {
@@ -100,6 +94,7 @@ export class Client {
                 this.socket.close(401);
             } else {
                 this.socket.close(503);
+                throw error;
             }
         }
     }

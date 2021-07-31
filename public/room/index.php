@@ -5,6 +5,7 @@ include_once __DIR__ . "/../src/orm/dbManager.php";
 include_once __DIR__ . "/../src/orm/models/publicRoom.php";
 include_once __DIR__ . "/../src/session.php";
 include_once __DIR__ . "/../src/url.php";
+include_once __DIR__ . "/../src/xrender.php";
 
 requireUserProfileLogin();
 $user = getSessionUser();
@@ -29,7 +30,13 @@ if (!$dbManager->isMember($user, $room)) {
 <body>
 <textarea id="chat-box"></textarea>
 <button id="chat-send">send</button>
-<section id="chat-feed"></section>
+<button id="load-history">load</button>
+<section id="chat-feed">
+    <?php $messages = $dbManager->getMessages($room);
+    foreach ($messages as $message) {
+        echo render("$rootURL/templates/message.html", $message->getAllAsAssoc());
+    } ?>
+</section>
 
 <script id="client-module"
         src="/script/client/main.js"

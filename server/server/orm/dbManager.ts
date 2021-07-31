@@ -9,6 +9,7 @@ import {
 import {
     Room
 } from "./models/room.ts";
+import {Message} from "./models/message.ts";
 
 
 export class DbManager {
@@ -25,14 +26,19 @@ export class DbManager {
         await this.client.connect(credentials);
     }
 
-    createMessage = async (user: User, room: Room, message: string): Promise<boolean> => {
+    createMessage = async (user: User, room: Room, message: string): Promise<Message|null> => {
+        // @ts-ignore this is included in deno but not in typescript rule set
+        let id: string = crypto.randomUUID();
         let date = Math.round(new Date().getTime() / 1000);
+
         let result = await this.client.execute(
             "insert into messages values (uuid_to_bin(?), uuid_to_bin(?), uuid_to_bin(?), from_unixtime(?), ?)",
-            // @ts-ignore
-            [crypto.randomUUID(), user.getID(), room.getID(), date, message]
+            [id, user.getID(), room.getID(), date, message]
         )
-        return !!result;
+        if (result) {
+            return new Message(id, user, room, date, message);
+        }
+        return null;
     }
 
     getRoom = async (roomID: string): Promise<Room | null> => {
