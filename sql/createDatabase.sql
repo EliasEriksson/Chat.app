@@ -84,9 +84,9 @@ create table members
 create table messages
 (
     id       binary(16) unique not null,
-    userID   binary(16) unique not null,
-    roomID   binary(16) unique not null,
-    postDate timestamp default current_timestamp,
+    userID   binary(16)        not null,
+    roomID   binary(16)        not null,
+    postDate timestamp         not null,
     content  text              not null,
 
     constraint primary key (id)
@@ -97,7 +97,7 @@ create table oldMessages
     id       binary(16) unique not null,
     userID   binary(16) unique not null,
     roomID   binary(16) unique not null,
-    postDate timestamp default current_timestamp,
+    postDate timestamp         not null,
     content  text              not null,
 
     constraint primary key (id)

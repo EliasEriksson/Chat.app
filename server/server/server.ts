@@ -35,6 +35,25 @@ export class Server {
         this.dbManager = new DbManager();
     }
 
+    private addClient = (client: Client, room: Room) => {
+        if (!this.rooms.has(room.getID())) {
+            this.rooms.set(room.getID(), new Set<Client>());
+        }
+        this.rooms.get(room.getID())!.add(client);
+    }
+
+    private removeClient = (client: Client, room: Room) =>  {
+        if (this.rooms.has(room.getID())) {
+            let clientRoom = this.rooms.get(room.getID())!
+            if (clientRoom.has(client)) {
+                clientRoom.delete(client);
+            }
+            if (!clientRoom.size) {
+                this.rooms.delete(room.getID());
+            }
+        }
+    }
+
     private authenticate = async (client: Client): Promise<[User, Room]> => {
         let messageData = await client.receive();
         let sessionID = messageData["sessionID"];
@@ -81,25 +100,14 @@ export class Server {
         let [user, room] = await this.authenticate(client);
         console.log(user.getSessionID())
 
-        if (!this.rooms.has(room.getID())) {
-            this.rooms.set(room.getID(), new Set<Client>());
-        }
-        this.rooms.get(room.getID())!.add(client);
+        this.addClient(client, room);
         console.log(this.rooms);
 
         try {
             await this.serve(client, user, room);
         } catch (error) {
             if (error instanceof ConnectionAborted) {
-                if (this.rooms.has(room.getID())) {
-                    let clientRoom = this.rooms.get(room.getID())!
-                    if (clientRoom.has(client)) {
-                        clientRoom.delete(client);
-                    }
-                    if (!clientRoom.size) {
-                        this.rooms.delete(room.getID());
-                    }
-                }
+                this.removeClient(client, room);
                 console.log(`user ${user.getID()} left room ${room.getID()}`)
                 console.log(this.rooms);
             } else {

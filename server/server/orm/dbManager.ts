@@ -10,6 +10,7 @@ import {
     Room
 } from "./models/room.ts";
 
+
 export class DbManager {
     private client: Client;
 
@@ -22,6 +23,16 @@ export class DbManager {
             hostname: string, username: string, db: string, password: string
         } = JSON.parse(await Deno.readTextFile(".credentials.json"));
         await this.client.connect(credentials);
+    }
+
+    createMessage = async (user: User, room: Room, message: string): Promise<boolean> => {
+        let date = Math.round(new Date().getTime() / 1000);
+        let result = await this.client.execute(
+            "insert into messages values (uuid_to_bin(?), uuid_to_bin(?), uuid_to_bin(?), from_unixtime(?), ?)",
+            // @ts-ignore
+            [crypto.randomUUID(), user.getID(), room.getID(), date, message]
+        )
+        return !!result;
     }
 
     getRoom = async (roomID: string): Promise<Room | null> => {
