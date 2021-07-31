@@ -285,7 +285,7 @@ class DbManager
                          join users on mt.userID = users.id 
                          join userProfiles on users.id = userProfiles.userID 
                          join rooms on mt.roomID = rooms.id 
-                       order by postDate;"
+                       ;"
             );
             if (!$query->bind_param("ssi", $roomID, $before, $this->pageLimit) || !$query->execute()) {
                 return [];

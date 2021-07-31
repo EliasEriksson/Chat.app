@@ -36,6 +36,7 @@ class Message
         return [
             "id" => $this->id,
             "userID" => $this->user->getID(),
+            "roomID" => $this->room->getID(),
             "email" => $this->user->getEmail(),
             "username" => $this->userProfile->getUsername(),
             "avatar" => $this->userProfile->getAvatar(),
@@ -78,7 +79,7 @@ class Message
         return $this->room;
     }
 
-    public function getPostDate(): DateTime
+    public function getPostDate(): int
     {
         return $this->postDate;
     }

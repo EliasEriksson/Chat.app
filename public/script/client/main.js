@@ -55,11 +55,12 @@ const main = () => {
             chatBoxElement.value = "";
         });
 
-        await client.connect();
-
-        testLoadHistory.addEventListener("click", async () => {
+        testLoadHistory.addEventListener("click", async() => {
+            console.log("clicked button")
             await historyLoader.loadHistory();
         });
+
+        await client.connect();
     });
 
 

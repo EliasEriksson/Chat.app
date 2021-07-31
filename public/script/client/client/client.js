@@ -92,14 +92,7 @@ export class Client {
         } catch (error) {
             if (error instanceof UnauthorizedError) {
                 this.socket.close(401);
-            } else if (
-                error instanceof Deno.errors.ConnectionReset
-                || error instanceof Deno.errors.ConnectionAborted
-                || error instanceof Deno.errors.ConnectionRefused
-                || error instanceof Deno.errors.NotConnected
-            ) {
-                console.log(error);
-            } else {
+            }  else {
                 this.socket.close(503);
                 throw error;
             }

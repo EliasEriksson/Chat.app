@@ -85,7 +85,6 @@ export class Server {
         let message: Message|null
         while (request = await client.receive()) {
             if (request.ping) {
-                console.log(`${user.getID()} pinged.`)
                 continue;
             }
 
@@ -110,8 +109,20 @@ export class Server {
 
     private handleConnection = async (wsc: WebSocketClient) => {
         let client = new Client(wsc);
+        let user: User, room: Room;
+        try {
+            [user, room] = await this.authenticate(client);
+        } catch (error) {
+            if (error instanceof ConnectionAborted
+                || error instanceof Deno.errors.ConnectionReset
+                || error instanceof Deno.errors.ConnectionAborted
+                || error instanceof Deno.errors.ConnectionRefused
+                || error instanceof Deno.errors.NotConnected) {
+                return;
+            }
+            throw error;
+        }
 
-        let [user, room] = await this.authenticate(client);
         console.log(user.getSessionID())
 
         this.addClient(client, room);
@@ -120,13 +131,15 @@ export class Server {
         try {
             await this.serve(client, user, room);
         } catch (error) {
-            if (error instanceof ConnectionAborted) {
+            if (error instanceof ConnectionAborted
+                || error instanceof Deno.errors.ConnectionReset
+                || error instanceof Deno.errors.ConnectionAborted
+                || error instanceof Deno.errors.ConnectionRefused
+                || error instanceof Deno.errors.NotConnected) {
                 this.removeClient(client, room);
-                console.log(`user ${user.getID()} left room ${room.getID()}`)
-                console.log(this.rooms);
-            } else {
-                console.log(error);
+                return;
             }
+            throw error;
         }
     }
 
