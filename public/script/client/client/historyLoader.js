@@ -3,12 +3,15 @@ import {
 } from "../xrender.js";
 
 
-const getFirstHtmlNode = (element) => {
+const getAttributeFromFirstHtmlNode = (element, attributeName) => {
     element = element.firstChild;
     while (element.nodeType === 3) {
         element = element.nextSibling;
+        if (element === null) {
+            return null;
+        }
     }
-    return element;
+    return element.getAttribute(attributeName);
 }
 
 
@@ -18,7 +21,7 @@ export class HistoryLoader {
         this.roomID = roomID;
         this.chatFeedElement = chatFeedElement;
         this.template = template;
-        this.lastRendered = getFirstHtmlNode(chatFeedElement).getAttribute("data-id");
+        this.lastRendered = getAttributeFromFirstHtmlNode(chatFeedElement, "data-id");
         this.loading = false;
         this.fullyConsumed = false;
     }

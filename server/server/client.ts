@@ -31,11 +31,18 @@ export class Client {
 
     }
 
-    send = (data: {[key: string]: any}) => {
-        this.socket.send(JSON.stringify(data));
+    send = async (data: { [key: string]: any }) => {
+        try {
+            await this.socket.send(JSON.stringify(data));
+        } catch (error) {
+            if (error instanceof Deno.errors.ConnectionReset) {
+                throw new ConnectionAborted("client bailed.")
+            }
+            throw error;
+        }
     }
 
-    receive = async (): Promise<{[key: string]: string}> => {
+    receive = async (): Promise<{ [key: string]: string }> => {
         let jsonString;
         while (this.open) {
             if (!(jsonString = this.messageQueue.shift())) {

@@ -73,16 +73,10 @@ export class Server {
             let message = `User ${user.getID()} is not a member of the room ${roomID}`;
             throw new UnauthorizedError(message);
         }
-        try {
-            client.send({
-                "status": 200
-            });
-        } catch (error) {
-            if (error instanceof Deno.errors.ConnectionReset) {
-                console.log("caught error")
-            }
-            throw error;
-        }
+
+        await client.send({
+            "status": 200
+        });
 
         return [user, room];
     }
@@ -101,7 +95,7 @@ export class Server {
             }
 
             for (let roomClient of this.rooms.get(room.getID())!) {
-                roomClient.send({
+                await roomClient.send({
                     "id": message.getID(),
                     "userID": user.getID(),
                     "email": user.getEmail(),
@@ -120,35 +114,29 @@ export class Server {
         try {
             [user, room] = await this.authenticate(client);
         } catch (error) {
-            if (error instanceof ConnectionAborted
-                || error instanceof Deno.errors.ConnectionReset
-                || error instanceof Deno.errors.ConnectionAborted
-                || error instanceof Deno.errors.ConnectionRefused
-                || error instanceof Deno.errors.NotConnected) {
-                console.log("an error was caught.")
+            if (error instanceof ConnectionAborted) {
+                console.log("client failed to authenticate.")
+                return;
+            } else if (error instanceof UnauthorizedError) {
+                console.log("user failed to authorise. disconnecting.")
                 return;
             }
-            console.log("an error was not caught")
-            throw error;
+            return;
         }
 
         console.log(user.getSessionID())
-
         this.addClient(client, room);
         console.log(this.rooms);
 
         try {
             await this.serve(client, user, room);
         } catch (error) {
-            if (error instanceof ConnectionAborted
-                || error instanceof Deno.errors.ConnectionReset
-                || error instanceof Deno.errors.ConnectionAborted
-                || error instanceof Deno.errors.ConnectionRefused
-                || error instanceof Deno.errors.NotConnected) {
+            if (error instanceof ConnectionAborted) {
                 this.removeClient(client, room);
                 return;
             }
-            throw error;
+            console.log(`failed to catch\n${error}\n`);
+            return;
         }
     }
 
