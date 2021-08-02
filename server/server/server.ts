@@ -142,14 +142,16 @@ export class Server {
             console.log(`uncaught error:\n${error}\n`);
             return;
         }
-
         this.addClient(client, room);
+        console.log(this.rooms)
 
         try {
             console.log("starting to serve a client.");
             await this.serve(client, user, room);
         } catch (error) {
             if (error instanceof ConnectionAborted) {
+                this.removeClient(client, room)
+                console.log(this.rooms)
                 return;
             }
             console.log(`uncaught error:\n${error}\n`);
