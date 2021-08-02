@@ -23,7 +23,7 @@ export class Client {
         this.messageQueue = [];
         this._open = false;
 
-        this.socket = new WebSocket(this.url);
+        this.socket = new WebSocket("ws://localhost:8080");
         this.socket.addEventListener("open", () => {
             this._open = true;
             setInterval(this.ping, 30000);
