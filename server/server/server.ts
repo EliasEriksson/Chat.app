@@ -59,52 +59,70 @@ export class Server {
     }
 
     private authenticate = async (client: Client): Promise<[User, Room]> => {
+        console.log("waiting for client to send credentials...");
         let messageData = await client.receive();
+        console.log("received client credentials.")
         let sessionID = messageData["sessionID"];
         let roomID = messageData["roomID"];
 
         let user = await this.dbManager.getUserFromSession(sessionID);
         if (!user) {
-            throw new UnauthorizedError("Unknown user.");
+            throw new UnauthorizedError("unknown user.");
         }
 
         let room = await this.dbManager.getRoom(roomID);
         if (!room) {
-            let message = `User ${user.getID()} is not a member of the room ${roomID}`;
+            let message = `user ${user.getID()} is not a member of the room ${roomID}`;
             throw new UnauthorizedError(message);
         }
 
         await client.send({
             "status": 200
         });
-
+        console.log(`user ${user.getUsername()} successfully authenticated.`)
         return [user, room];
     }
 
     private serve = async (client: Client, user: User, room: Room) => {
         let request: { [key: string]: string };
         let message: Message|null
+        console.log("waiting for a request from a client...");
         while (request = await client.receive()) {
+            console.log("message received from a client.")
             if (request.ping) {
+                console.log("message was a ping.")
                 continue;
             }
 
             message = await this.dbManager.createMessage(user, room, request.content);
             if (!message) {
+                console.log("message could not be created for some reason.")
                 continue;
             }
 
+            console.log("sending out message to all connected clients in this room...")
             for (let roomClient of this.rooms.get(room.getID())!) {
-                await roomClient.send({
-                    "id": message.getID(),
-                    "userID": user.getID(),
-                    "email": user.getEmail(),
-                    "username": user.getUsername(),
-                    "avatar": user.getAvatar(),
-                    "content": request.content,
-                    "postDate": message.getPostDate()
-                });
+                try {
+                    await roomClient.send({
+                        "id": message.getID(),
+                        "userID": user.getID(),
+                        "email": user.getEmail(),
+                        "username": user.getUsername(),
+                        "avatar": user.getAvatar(),
+                        "content": request.content,
+                        "postDate": message.getPostDate()
+                    });
+                } catch (error) {
+                    if (error instanceof ConnectionAborted) {
+                        console.log("client went away. disconnecting.");
+                        this.removeClient(client, room);
+                    } else {
+                        throw error;
+                    }
+                }
             }
+            console.log("message sent to all clients.")
+            console.log("waiting for a request from the client...");
         }
     }
 
@@ -115,27 +133,26 @@ export class Server {
             [user, room] = await this.authenticate(client);
         } catch (error) {
             if (error instanceof ConnectionAborted) {
-                console.log("client failed to authenticate.")
+                console.log("a client went away. disconnecting.");
                 return;
             } else if (error instanceof UnauthorizedError) {
-                console.log("user failed to authorise. disconnecting.")
+                console.log("user failed to authorise. disconnecting.");
                 return;
             }
+            console.log(`uncaught error:\n${error}\n`);
             return;
         }
 
-        console.log(user.getSessionID())
         this.addClient(client, room);
-        console.log(this.rooms);
 
         try {
+            console.log("starting to serve a client.");
             await this.serve(client, user, room);
         } catch (error) {
             if (error instanceof ConnectionAborted) {
-                this.removeClient(client, room);
                 return;
             }
-            console.log(`failed to catch\n${error}\n`);
+            console.log(`uncaught error:\n${error}\n`);
             return;
         }
     }
