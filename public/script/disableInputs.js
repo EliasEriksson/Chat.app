@@ -9,6 +9,7 @@
  * classes will be enabled and disabled by the enabler and disabler.
  */
 
+// TODO change this script to not rely on document.currentScript so defer can be added to script
 const disableTargets = (targetElements) => {
     for (let targetElement of targetElements) {
         targetElement.disabled = false;

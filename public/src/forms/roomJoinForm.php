@@ -10,12 +10,12 @@ include_once __DIR__ . "/fields/submitField.php";
 class RoomJoinForm extends Form {
     private Room $room;
 
-    public function __construct(Room $room, string $classPrefix = "", string $method = "POST")
+    public function __construct(Room $room, string $classPrefix = "")
     {
         $roomName = $room->getName();
         $this->room = $room;
         parent::__construct([
-        ], new SubmitField("room-join-submit", "Join $roomName"));
+        ], new SubmitField("room-join-submit", "Join $roomName"), $classPrefix);
     }
 
     public function validateForm(DbManager $dbManager = null): bool
