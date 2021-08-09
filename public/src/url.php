@@ -8,8 +8,9 @@ use JetBrains\PhpStorm\NoReturn;
  *
  * @param string $url
  * @link string $url
+ * @return NoReturn
  */
-#[NoReturn] function redirect(string $url)
+#[NoReturn] function redirect(string $url): NoReturn
 {
     header("location: $url");
     die();
