@@ -30,15 +30,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <?php include "$rootURL/includes/head.php" ?>
+    <title>Room | Join | Authenticate</title>
 </head>
 <body>
+<?php include "$rootURL/includes/header.php" ?>
 <?= $roomAuthenticateForm->toHTML() ?>
+<?php include "$rootURL/includes/footer.php" ?>
 </body>
 </html>

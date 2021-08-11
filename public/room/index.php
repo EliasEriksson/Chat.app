@@ -1,5 +1,4 @@
 <?php
-
 include_once __DIR__ . "/../config.php";
 include_once __DIR__ . "/../src/orm/dbManager.php";
 include_once __DIR__ . "/../src/orm/models/publicRoom.php";
@@ -19,15 +18,25 @@ if (!($room = $dbManager->getRoom($roomID))) {
 if (!$dbManager->isMember($user, $room)) {
     redirect("/room/join/?$roomID");
 } ?>
-<!doctype html>
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <?php include "$rootURL/includes/head.php" ?>
+    <script id="client-module"
+            defer
+            src="/script/client/main.js"
+            type="module"
+            data-roomID="<?= $roomID ?>"
+            data-chatFeedElementID="chat-feed"
+            data-chatBoxElementID="chat-box"
+            data-chatSendElementID="chat-send">
+    </script>
+    <title>Rooms</title>
 </head>
 <body>
+<?php include "$rootURL/includes/header.php" ?>
 <textarea id="chat-box"></textarea>
 <button id="chat-send">send</button>
 <button id="load-history">load</button>
@@ -37,14 +46,6 @@ if (!$dbManager->isMember($user, $room)) {
         echo render("$rootURL/templates/message.html", $message->getAllAsAssoc());
     } ?>
 </section>
-
-<script id="client-module"
-        src="/script/client/main.js"
-        type="module"
-        data-roomID="<?= $roomID ?>"
-        data-chatFeedElementID="chat-feed"
-        data-chatBoxElementID="chat-box"
-        data-chatSendElementID="chat-send">
-</script>
+<?php include "$rootURL/includes/footer.php" ?>
 </body>
 </html>
