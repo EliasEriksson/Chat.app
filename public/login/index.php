@@ -11,7 +11,7 @@ if (userLoggedIn()) {
     redirect("../register/profile");
 }
 
-$userLoginForm = new UserLoginForm("general");
+$userLoginForm = new UserLoginForm();
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($user = $userLoginForm->validateForm()) {
         redirect(".");
@@ -26,7 +26,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 <body>
 <?php include "$rootURL/includes/header.php" ?>
+
+<section class="hero">
+    <h1>Login to your account</h1>
 <?= $userLoginForm->toHTML() ?>
+
+<p><a href="register">Click here to create an account!</a></p>
+</section>
 <?php include "$rootURL/includes/footer.php" ?>
 </body>
 </html>

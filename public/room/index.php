@@ -37,14 +37,19 @@ if (!$dbManager->isMember($user, $room)) {
 </head>
 <body>
 <?php include "$rootURL/includes/header.php" ?>
-<textarea id="chat-box"></textarea>
-<button id="chat-send">send</button>
-<button id="load-history">load</button>
+<section class="chat-room">
 <section id="chat-feed">
     <?php $messages = $dbManager->getMessages($room);
     foreach ($messages as $message) {
         echo render("$rootURL/templates/message.html", $message->getAllAsAssoc());
     } ?>
+</section>
+<div>
+<textarea id="chat-box"></textarea>
+<button id="chat-send" class="button">send</button>
+</div>
+<button id="load-history" class="button button-outline">load</button>
+
 </section>
 <?php include "$rootURL/includes/footer.php" ?>
 </body>

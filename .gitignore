@@ -2,3 +2,6 @@
 node_modules/*
 package-lock.json
 **/.credentials.json
+.vscode/settings.json
+.vscode/phpdoc.code-snippets
+server/runServer.sh
