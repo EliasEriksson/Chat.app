@@ -1,8 +1,8 @@
 <?php
 
 include_once __DIR__ . "/form.php";
-include_once __DIR__ . "/../orm/dbManager.php";
-include_once __DIR__ . "/../orm/models/user.php";
+include_once __DIR__ . "/../../orm/dbManager.php";
+include_once __DIR__ . "/../../orm/models/user.php";
 include_once __DIR__ . "/fields/emailField.php";
 include_once __DIR__ . "/fields/passwordField.php";
 include_once __DIR__ . "/fields/submitField.php";

@@ -3,7 +3,7 @@
 include_once __DIR__ . "/../../config.php";
 include_once __DIR__ . "/../../src/url.php";
 include_once __DIR__ . "/../../src/session.php";
-include_once __DIR__ . "/../../src/forms/userProfileRegisterForm.php";
+include_once __DIR__ . "/../../src/htmlElements/forms/userProfileRegisterForm.php";
 
 
 if (userProfileLoggedIn()) {

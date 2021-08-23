@@ -1,13 +1,13 @@
 <?php
-include_once __DIR__ . "/../files.php";
+include_once __DIR__ . "/../../files.php";
 include_once __DIR__ . "/form.php";
 include_once __DIR__ . "/fields/textField.php";
 include_once __DIR__ . "/fields/fileField.php";
 include_once __DIR__ . "/fields/submitField.php";
-include_once __DIR__ . "/../orm/dbManager.php";
-include_once __DIR__ . "/../orm/models/user.php";
-include_once __DIR__ . "/../orm/models/userProfile.php";
-include_once __DIR__ . "/../mime.php";
+include_once __DIR__ . "/../../orm/dbManager.php";
+include_once __DIR__ . "/../../orm/models/user.php";
+include_once __DIR__ . "/../../orm/models/userProfile.php";
+include_once __DIR__ . "/../../mime.php";
 
 class UserProfileRegisterForm extends Form
 {

@@ -1,7 +1,7 @@
 <?php
 include_once __DIR__ . "/../config.php";
 include_once __DIR__ . "/../src/session.php";
-include_once __DIR__ . "/../src/forms/userRegisterForm.php";
+include_once __DIR__ . "/../src/htmlElements/forms/userRegisterForm.php";
 include_once __DIR__ . "/../src/url.php";
 
 if (userLoggedIn()) {

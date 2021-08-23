@@ -2,7 +2,7 @@
 
 include_once __DIR__ . "/../../config.php";
 include_once __DIR__ . "/../../src/orm/dbManager.php";
-include_once __DIR__ . "/../../src/forms/roomJoinForm.php";
+include_once __DIR__ . "/../../src/htmlElements/forms/roomJoinForm.php";
 include_once __DIR__ . "/../../src/session.php";
 include_once __DIR__ . "/../../src/url.php";
 
