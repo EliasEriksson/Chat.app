@@ -1,8 +1,10 @@
 [Unit]
 Description=Chat.app
 After=multi-user.target
+StartLimitIntervalSec=60
 
 [Service]
+Restart=on-failure
 WorkingDirectory=/var/www/Chat.app/server/
 ExecStart=deno run --allow-net --allow-read /var/www/Chat.app/server/main.ts
 
