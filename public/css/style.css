@@ -100,11 +100,6 @@ body {
   background: #191a1fee;
 }
 
-#servers {
-  display: flex;
-  gap: 1rem;
-}
-
 #servers .server {
   overflow: hidden;
   width: 5rem;
@@ -163,6 +158,72 @@ p {
   padding: 2rem;
   margin-top: 6rem;
   box-shadow: 0 0.2rem 0.5rem #bb86fc;
+}
+
+.w-big {
+  max-width: 1600px;
+  width: 95%;
+}
+
+.m-auto {
+  margin: auto;
+}
+
+.client {
+  display: grid;
+  grid-template-columns: minmax(100px, 250px) auto 200px;
+  background: #000c;
+  border-radius: 1rem;
+}
+
+#servers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 250px));
+  justify-content: center;
+  text-align: center;
+  margin-top: 1rem;
+  gap: 1rem;
+}
+
+#servers .server-icon {
+  text-decoration: none;
+  background: #23242aee;
+  border-radius: 1rem;
+  margin: 1rem 0;
+  padding: 3rem 1rem 0.5rem 1rem;
+}
+#servers .server-icon:hover {
+  background: #191a1fee !important;
+  box-shadow: 0 0.2rem 0.5rem #bb86fc;
+}
+#servers .server-icon:hover img {
+  transform: scale(1.1);
+}
+
+.server-img-wrap {
+  display: flex;
+  border-radius: 0.5rem;
+  margin-top: -4rem;
+  overflow: hidden;
+  display: flex;
+}
+
+.server-icon .server-info {
+  padding-top: 0.5rem;
+}
+
+#servers img {
+  width: 100%;
+}
+
+#servers h3 {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+#servers .server-bio {
+  font-style: italic;
+  margin: unset;
 }
 
 /* 
