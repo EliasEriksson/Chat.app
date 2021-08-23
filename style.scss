@@ -45,6 +45,10 @@ $gold: #bb86fc;
   color      : $text-medium;
 }
 
+*:focus-visible{
+  box-shadow: 0 0 0 .2rem $gold;
+}
+
 body {
   position      : relative;
   min-height    : 100vh;
@@ -96,10 +100,12 @@ header {
   justify-content: space-between;
   padding        : 1rem 2rem;
   max-width      : 95%;
-}
 
-header nav a {
+  nav{
+    a{
   margin-left: .2rem !important;
+    }
+  }
 }
 
 footer {
@@ -114,7 +120,9 @@ footer {
 
 }
 
-.button {
+.button, input[type="submit"] {
+
+  font-weight: bold;
   background   : $gold;
   color        : $white;
   padding      : .5rem .67rem;
@@ -125,14 +133,27 @@ footer {
   width        : max-content;
   margin       : .2rem auto;
   transition   : .2s ease-out;
+
+  &:hover,&:focus{
+    filter : saturate(2);
+    opacity: .8;
+  }
 }
 
+input, textarea{
+  &[type="text"], &[type="password"], &[type="email"]{
+  background: #3336;
+  border: none;
+  box-shadow: 0px 2px #333;
+  padding: .2rem .5rem;
+  transition: .3s ease-out;
 
-.button:hover {
-  filter : saturate(2);
-  opacity: .8;
+  &:focus{
+    box-shadow: 0px 5px $gold;
+    outline:none;
+  }
 }
-
+}
 
 .button-outline {
   color     : $gold;
@@ -273,6 +294,15 @@ p {
 #servers .server-bio {
   font-style: italic;
   margin    : unset;
+}
+
+.label, .general-label {
+  font-weight: bold;
+  display: flex;
+flex-direction: column;
+max-width: 30ch;
+width: 100%;
+margin: .2rem auto 1rem auto;
 }
 
 /* 

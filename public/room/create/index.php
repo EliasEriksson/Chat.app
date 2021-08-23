@@ -24,7 +24,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 <body>
 <?php include "$rootURL/includes/header.php" ?>
+<section class="hero">
 <?= $roomCreateForm->toHTML() ?>
+</section>
 <?php include "$rootURL/includes/footer.php" ?>
 </body>
 </html>
