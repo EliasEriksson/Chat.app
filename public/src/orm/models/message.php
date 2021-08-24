@@ -1,8 +1,4 @@
 <?php
-
-
-//use JetBrains\PhpStorm\ArrayShape;
-
 include_once __DIR__ . "/../dbManager.php";
 include_once __DIR__ . "/user.php";
 include_once __DIR__ . "/userProfile.php";
