@@ -320,6 +320,9 @@ min-height: 50vh;
 display: flex;
 align-content: center;
 align-items: end;
+border-radius: .5rem;
+background: #5555;
+padding:1rem;
 
   &::before{
     position: absolute;
@@ -338,9 +341,28 @@ overflow-y: scroll;
   }
 }
 
+.chat-message{
+  margin-top: .5rem;
+
+  &-username{
+    font-weight: bold;
+  }
+
+  &-time{
+    font-size: .8rem;
+  }
+
+  &-content{
+    word-break: break-word;
+  }
+}
+
 #chat-box{
   width: 100%;
 margin: 1rem 0;
+padding: 1rem;
+border-radius: 0.5rem;
+background: #5555;
 }
 
 #chat-send{

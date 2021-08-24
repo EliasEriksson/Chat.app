@@ -265,6 +265,9 @@ p {
   display: flex;
   align-content: center;
   align-items: end;
+  border-radius: 0.5rem;
+  background: #5555;
+  padding: 1rem;
 }
 #chat-feed-container::before {
   position: absolute;
@@ -281,9 +284,25 @@ p {
   overflow-y: scroll;
 }
 
+.chat-message {
+  margin-top: 0.5rem;
+}
+.chat-message-username {
+  font-weight: bold;
+}
+.chat-message-time {
+  font-size: 0.8rem;
+}
+.chat-message-content {
+  word-break: break-word;
+}
+
 #chat-box {
   width: 100%;
   margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: #5555;
 }
 
 #chat-send {
