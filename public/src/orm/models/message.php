@@ -14,6 +14,9 @@ class Message
     private int $postDate;
     private string $content;
 
+    private string $oldDate = "Y:m:d H:i";
+    private string $recentDate = "H:i";
+
 
     public static function fromAssoc(array $messageData): Message
     {
@@ -53,6 +56,7 @@ class Message
         $this->room = $room;
         $this->postDate = $postDate;
         $this->content = $content;
+
     }
 
     public function getID(): string
@@ -82,13 +86,18 @@ class Message
 
     public function getFormattedPostDate(): string
     {
-        $date =  DateTime::createFromFormat(
+        $tomorrow = new DateTime("tomorrow");
+        $then =  DateTime::createFromFormat(
             "U",
             $this->postDate,
             new DateTimeZone("UTC")
         );
-        $date->setTimezone(new DateTimeZone($this->userProfile->getTimezone()));
-        return $date->format("Y:m:d H:i");
+        if (($diff = $tomorrow->getTimestamp() - $then->getTimestamp()) < 86400 ) { // difference less than one day
+            return "Today at "  . $then->format($this->recentDate);
+        } else if ($diff < 172800) { // difference less than two days
+            return "Yesterday at " . $then->format($this->recentDate);
+        }
+        return $then->format($this->oldDate);
     }
 
     public function getContent(): string

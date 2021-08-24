@@ -3,6 +3,10 @@ import {
 } from "../xrender.js";
 
 import {
+    formatUnixTime
+} from "./time.js";
+
+import {
     UnauthorizedError
 } from "./errors.js";
 
@@ -69,20 +73,20 @@ export class Client {
     authenticate = async () => {
         await this.open();
         console.log("connection with the server is established.");
-        console.log("sending credentials to the server...")
+        console.log("sending credentials to the server...");
         this.socket.send(JSON.stringify({
             "sessionID": this.sessionID,
             "roomID": this.roomID
         }));
-        console.log("credentials have been sent to the server.")
+        console.log("credentials have been sent to the server.");
 
-        console.log("awaiting server to respond...")
+        console.log("awaiting server to respond...");
         let response = await this.receive();
         if (response.status === 200) {
-            console.log("server responded with 200.")
+            console.log("server responded with 200.");
             return;
         }
-        console.log("server did not allow a connection.")
+        console.log("server did not allow a connection.");
         throw new UnauthorizedError();
     }
 
@@ -90,21 +94,22 @@ export class Client {
         try {
             await this.authenticate();
             let response, html;
-            console.log("awaiting response from the server...")
+            console.log("awaiting response from the server...");
             while (response = await this.receive()) {
-                console.log("received response from the server.");
-                console.log("rendering message to html...")
+                // console.log("received response from the server.");
+                // console.log("rendering message to html...");
+                response.postDate = formatUnixTime(response.postDate);
                 html = render(this.template, response);
-                console.log("rendered html\n", html);
-                console.log("adding html to the page.")
+                // console.log("rendered html\n", html);
+                // console.log("adding html to the page.");
                 this.chatFeedElement.appendChild(html);
-                console.log("awaiting response from the server...")
+                // console.log("awaiting response from the server...");
             }
         } catch (error) {
             if (error instanceof UnauthorizedError) {
-                this.socket.close(401);
+                this.socket.close();
             }  else {
-                this.socket.close(503);
+                this.socket.close();
                 throw error;
             }
         }

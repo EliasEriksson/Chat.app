@@ -9,8 +9,7 @@ include_once __DIR__ . "/config.php";
 </head>
 <body>
 <?php
-$d = DateTime::createFromFormat("U", 1629807618, new DateTimeZone("Europe/Stockholm"));
-echo $d->format("Y:m:d H:i") . "<br>";
+echo (new DateTime("tomorrow"))->format("Y:m:d H:i:s") . "<br>";
 ?>
 </body>
 </html>
