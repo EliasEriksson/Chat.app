@@ -17,7 +17,8 @@ if (!($room = $dbManager->getRoom($roomID))) {
 
 if (!$dbManager->isMember($user, $room)) {
     redirect("/room/join/?$roomID");
-} ?>
+}
+?>
 
 
 <!DOCTYPE html>
@@ -38,17 +39,47 @@ if (!$dbManager->isMember($user, $room)) {
 <body>
 <?php include "$rootURL/includes/header.php" ?>
 <section class="chat-room">
+<div id="chat-feed-container">
+
 <section id="chat-feed">
     <?php $messages = $dbManager->getMessages($room);
     foreach ($messages as $message) {
         echo render("$rootURL/templates/message.html", $message->getAllAsAssoc());
     } ?>
 </section>
+</div>
 <div>
-<textarea id="chat-box"></textarea>
-<button id="chat-send" class="button">send</button>
+<!-- <textarea id="chat-box"></textarea> -->
+
+<form action="">
+<input type="text" id="chat-box" placeholder="Message to <?= $room->getName() ."..." ?>" autocomplete="off">
+<button id="chat-send" class="button" onclick="event.preventDefault()">send</button>
+</form>
+<!-- <input type="submit" value="send" id="chat-send" onclick="event.preventDefault()"> -->
 </div>
 <button id="load-history" class="button button-outline">load</button>
+
+
+<!-- This thingy needs to be moved @Elias -->
+
+<script>
+// Not working 100% yet
+// You can load messages when scrolling to the top of the feed,
+// but it scrolls all the way down when content is loaded
+
+const chatFeedEl = document.getElementById("chat-feed");
+
+chatFeedEl.addEventListener("scroll", function(e){
+    if(chatFeedEl.scrollTop < 50) document.getElementById('load-history').click();
+})
+
+chatFeedEl.addEventListener("DOMNodeInserted", function (e) {
+chatFeedEl.scrollTop = chatFeedEl.scrollHeight;
+});
+
+
+
+</script>
 
 </section>
 <?php include "$rootURL/includes/footer.php" ?>
