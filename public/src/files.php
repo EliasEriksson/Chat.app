@@ -34,7 +34,7 @@ function getLatestUploadedFile(string $userID): string
     $bestFile = "";
     $dir = $_SERVER["DOCUMENT_ROOT"] . "/media/users/$userID";
     if (!file_exists($dir)) {
-        mkdir($dir, 0755);
+        mkdir($dir, 0755, true);
         return "";
     }
     foreach (scanDirectory($dir) as $file) {
