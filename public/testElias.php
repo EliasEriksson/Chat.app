@@ -1,12 +1,16 @@
+<?php
+include_once __DIR__ . "/config.php";
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
-    <?php include "$rootURL/includes/head.php" ?>
     <title>testElias.php</title>
 </head>
 <body>
-<?php include "$rootURL/includes/header.php" ?>
-
-<?php include "$rootURL/includes/footer.php" ?>
+<?php
+$d = DateTime::createFromFormat("U", 1629807618, new DateTimeZone("Europe/Stockholm"));
+echo $d->format("Y:m:d H:i") . "<br>";
+?>
 </body>
 </html>

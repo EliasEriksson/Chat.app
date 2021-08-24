@@ -1,7 +1,7 @@
 <?php
 
 
-use JetBrains\PhpStorm\ArrayShape;
+//use JetBrains\PhpStorm\ArrayShape;
 
 include_once __DIR__ . "/../dbManager.php";
 include_once __DIR__ . "/user.php";
@@ -24,7 +24,7 @@ class Message
         return new Message(
             $messageData["id"],
             new User($messageData["userID"], $messageData["email"], $messageData["passwordHash"]),
-            new UserProfile($messageData["userID"], $messageData["username"], $messageData["avatar"]),
+            new UserProfile($messageData["userID"], $messageData["username"], $messageData["avatar"], $messageData["timezone"]),
             new PublicRoom($messageData["roomID"], $messageData["roomName"]),
             $messageData["postDate"],
             $messageData["content"]
@@ -41,7 +41,7 @@ class Message
             "username" => $this->userProfile->getUsername(),
             "avatar" => $this->userProfile->getAvatar(),
             "content" => $this->content,
-            "postDate" => $this->postDate
+            "postDate" => $this->getFormattedPostDate()
         ];
     }
 
@@ -82,6 +82,17 @@ class Message
     public function getPostDate(): int
     {
         return $this->postDate;
+    }
+
+    public function getFormattedPostDate(): string
+    {
+        $date =  DateTime::createFromFormat(
+            "U",
+            $this->postDate,
+            new DateTimeZone("UTC")
+        );
+        $date->setTimezone(new DateTimeZone($this->userProfile->getTimezone()));
+        return $date->format("Y:m:d H:i");
     }
 
     public function getContent(): string

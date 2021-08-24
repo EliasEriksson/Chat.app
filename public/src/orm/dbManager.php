@@ -281,7 +281,7 @@ class DbManager
             $query = $this->dbConn->prepare(
                 "select bin_to_uuid(mt.id) as id, bin_to_uuid(users.id) as userID, 
                          bin_to_uuid(rooms.id) as roomID, email, users.passwordHash as passwordHash, 
-                         username, avatar, name as roomName, unix_timestamp(postDate) as postDate, content 
+                         username, avatar, timezone, name as roomName, unix_timestamp(postDate) as postDate, content 
                        from (select * from messages 
                        where roomID = uuid_to_bin(?) 
                          and postDate < (select postDate from messages where id=uuid_to_bin(?))
@@ -298,7 +298,7 @@ class DbManager
             $query = $this->dbConn->prepare(
                 "select bin_to_uuid(mt.id) as id, bin_to_uuid(users.id) as userID, 
                          bin_to_uuid(rooms.id) as roomID, email, users.passwordHash as passwordHash, 
-                         username, avatar, name as roomName, unix_timestamp(postDate) as postDate, content 
+                         username, avatar, timezone, name as roomName, unix_timestamp(postDate) as postDate, content 
                        from (select * from messages 
                        where roomID = uuid_to_bin(?) 
                        order by postDate desc limit ?) as mt 
