@@ -7,6 +7,7 @@
   font-family: "Nunito Sans", "arial", "sans-serif";
   box-sizing: border-box;
   color: #fffa;
+  scroll-behavior: smooth;
 }
 
 *:focus-visible {
@@ -248,6 +249,49 @@ p {
   max-width: 30ch;
   width: 100%;
   margin: 0.2rem auto 1rem auto;
+}
+
+.chat-room {
+  margin: 1rem;
+  margin-top: 1rem;
+  margin-top: 0;
+  background: #333e;
+  padding: 1rem;
+}
+
+#chat-feed-container {
+  position: relative;
+  min-height: 50vh;
+  display: flex;
+  align-content: center;
+  align-items: end;
+}
+#chat-feed-container::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10rem;
+  background: linear-gradient(#333 25%, #3330);
+  content: "";
+}
+#chat-feed-container #chat-feed {
+  width: 100%;
+  max-height: 65vh;
+  overflow-y: scroll;
+}
+
+#chat-box {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+#chat-send {
+  display: none;
+}
+
+.password1-password2-wrapper {
+  display: none;
 }
 
 /* 
