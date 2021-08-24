@@ -1,5 +1,13 @@
 <?php
 include_once __DIR__ . "/config.php";
+include_once __DIR__ . "/src/url.php";
+include_once __DIR__ . "/src/session.php";
+
+if (userProfileLoggedIn()) {
+    redirect("/room");
+} else if (userLoggedIn()) {
+    redirect("/register/profile");
+}
 ?>
 
 <!DOCTYPE html>
