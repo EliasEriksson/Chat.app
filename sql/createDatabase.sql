@@ -49,6 +49,7 @@ create table userProfiles
     userID   binary(16) unique not null,
     username varchar(255)      not null,
     avatar   varchar(100) default 'media/assets/defaultAvatar.png',
+    timezone varchar(50)       not null,
 
     constraint userProfilesAvatar check ( avatar rlike '(^media/users/)|(^media/assets/defaultAvatar.png$)' ),
     constraint primary key (userID)

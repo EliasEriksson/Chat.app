@@ -8,6 +8,7 @@ include_once __DIR__ . "/../../orm/dbManager.php";
 include_once __DIR__ . "/../../orm/models/user.php";
 include_once __DIR__ . "/../../orm/models/userProfile.php";
 include_once __DIR__ . "/../../mime.php";
+include_once __DIR__ . "/fields/hiddenField.php";
 
 class UserProfileRegisterForm extends Form
 {
@@ -17,7 +18,8 @@ class UserProfileRegisterForm extends Form
     {
         parent::__construct([
             new TextField("Username:", "username"),
-            new FileField("Avatar:", "avatar", $user, MIME::PNG|MIME::JPEG|MIME::SVG, mustValidate: false)
+            new FileField("Avatar:", "avatar", $user, MIME::PNG|MIME::JPEG|MIME::SVG, mustValidate: false),
+            new HiddenField("timezone", refillOnFailedPost: false)
         ], new SubmitField("register-user-profile", "Submit"), $classPrefix);
         $this->user = $user;
     }
@@ -35,7 +37,7 @@ class UserProfileRegisterForm extends Form
         if (!$dbManager) {
             $dbManager = new DbManager();
         }
-        if ($userProfile = $dbManager->createUserProfile($this->user, $_POST["username"], $relativeFilePath)) {
+        if ($userProfile = $dbManager->createUserProfile($this->user, $_POST["username"], $relativeFilePath, $_POST["timezone"])) {
             $_SESSION["userProfile"] = $userProfile;
             return $userProfile;
         }
