@@ -92,6 +92,7 @@ class Message
             $this->postDate,
             new DateTimeZone("UTC")
         );
+        $then->setTimezone(new DateTimeZone($this->userProfile->getTimezone()));
         if (($diff = $tomorrow->getTimestamp() - $then->getTimestamp()) < 86400 ) { // difference less than one day
             return "Today at "  . $then->format($this->recentDate);
         } else if ($diff < 172800) { // difference less than two days
