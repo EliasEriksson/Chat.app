@@ -17,7 +17,8 @@ if (!($room = $dbManager->getRoom($roomID))) {
 
 if (!$dbManager->isMember($user, $room)) {
     redirect("/room/join/?$roomID");
-} ?>
+}
+?>
 
 
 <!DOCTYPE html>
@@ -33,22 +34,37 @@ if (!$dbManager->isMember($user, $room)) {
             data-chatBoxElementID="chat-box"
             data-chatSendElementID="chat-send">
     </script>
+    <script src="/script/chatFeed.js" defer></script>
     <title>Rooms</title>
 </head>
 <body>
 <?php include "$rootURL/includes/header.php" ?>
 <section class="chat-room">
-<section id="chat-feed">
-    <?php $messages = $dbManager->getMessages($room);
-    foreach ($messages as $message) {
-        echo render("$rootURL/templates/message.html", $message->getAllAsAssoc());
-    } ?>
-</section>
-<div>
-<textarea id="chat-box"></textarea>
-<button id="chat-send" class="button">send</button>
-</div>
-<button id="load-history" class="button button-outline">load</button>
+    <div id="chat-feed-container">
+
+        <section id="chat-feed">
+            <?php $messages = $dbManager->getMessages($room);
+            foreach ($messages as $message) {
+                echo render("$rootURL/templates/message.html", $message->getAllAsAssoc());
+            } ?>
+        </section>
+    </div>
+    <div>
+        <!-- <textarea id="chat-box"></textarea> -->
+
+        <form action="">
+            <input type="text" id="chat-box" placeholder="Message to <?= $room->getName() . "..." ?>"
+                   autocomplete="off">
+            <button id="chat-send" class="button" onclick="event.preventDefault()">send</button>
+        </form>
+        <!-- <input type="submit" value="send" id="chat-send" onclick="event.preventDefault()"> -->
+    </div>
+    <button id="load-history" class="button button-outline">load</button>
+
+
+
+    <!--  moved to script/chatFeed.js  -->
+
 
 </section>
 <?php include "$rootURL/includes/footer.php" ?>

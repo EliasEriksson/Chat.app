@@ -6,6 +6,7 @@ include_once __DIR__ . "/../../orm/models/user.php";
 include_once __DIR__ . "/fields/emailField.php";
 include_once __DIR__ . "/fields/passwordField.php";
 include_once __DIR__ . "/fields/submitField.php";
+include_once __DIR__ . "/fields/hiddenField.php";
 
 
 class UserLoginForm extends Form
@@ -14,7 +15,8 @@ class UserLoginForm extends Form
     {
         parent::__construct([
             new EmailField("Email: ", "email"),
-            new PasswordField("Password:", "password")
+            new PasswordField("Password:", "password"),
+            new HiddenField("timezone", refillOnFailedPost: false)
         ], new SubmitField("login", "Log in"), $classPrefix);
     }
 
@@ -33,6 +35,13 @@ class UserLoginForm extends Form
                 $dbManager->updateSession($user);
                 $_SESSION["user"] = $user;
                 if ($userProfile = $dbManager->getUserProfile($user)) {
+                    if ($_POST["timezone"] !== $userProfile->getTimezone()) {
+                        if (!($userProfile = $dbManager->updateUserProfile($userProfile, timezone: $_POST["timezone"]))) {
+                            $this->setError("Could not update your timezone.");
+                            return null;
+                        }
+
+                    }
                     $_SESSION["userProfile"] = $userProfile;
                 }
                 return $user;

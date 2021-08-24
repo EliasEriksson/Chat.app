@@ -88,7 +88,7 @@ class DbManager
         return null;
     }
 
-    public function createUserProfile(User $user, string $username, string $avatar): ?UserProfile
+    public function createUserProfile(User $user, string $username, string $avatar, string $timezone): ?UserProfile
     {
         $id = $user->getID();
         if (!$avatar) {
@@ -96,12 +96,12 @@ class DbManager
         }
         $query = $this->dbConn->prepare(
             'insert into userProfiles 
-                   values (uuid_to_bin(?), ?, ?);'
+                   values (uuid_to_bin(?), ?, ?, ?);'
         );
         $username = strip_tags($username);
 
-        if ($query->bind_param("sss", $id, $username, $avatar) && $query->execute()) {
-            return new UserProfile($id, $username, $avatar);
+        if ($query->bind_param("ssss", $id, $username, $avatar, $timezone) && $query->execute()) {
+            return new UserProfile($id, $username, $avatar, $timezone);
         }
         return null;
     }
@@ -170,7 +170,7 @@ class DbManager
         return null;
     }
 
-    public function updateUserProfile(UserProfile $userProfile, ?string $username = null, ?string $avatar = null): ?UserProfile
+    public function updateUserProfile(UserProfile $userProfile, ?string $username = null, ?string $avatar = null, ?string $timezone = null): ?UserProfile
     {
         $id = $userProfile->getID();
         if (!$username) {
@@ -179,14 +179,18 @@ class DbManager
         if (!$avatar) {
             $avatar = $userProfile->getAvatar();
         }
+        if (!$timezone) {
+            $timezone = $userProfile->getTimezone();
+        }
+
         $query = $this->dbConn->prepare(
             "update userProfiles 
-                   set username = ?, avatar = ? 
+                   set username = ?, avatar = ?, timezone = ?
                    where userID = uuid_to_bin(?);"
         );
 
-        if ($query->bind_param("sss", $username, $avatar, $id) && $query->execute()) {
-            return new UserProfile($id, $username, $avatar);
+        if ($query->bind_param("ssss", $username, $avatar, $timezone, $id) && $query->execute()) {
+            return new UserProfile($id, $username, $avatar, $timezone);
         }
         return null;
     }
@@ -242,7 +246,7 @@ class DbManager
     {
         $id = $user->getID();
         $query = $this->dbConn->prepare(
-            "select bin_to_uuid(userID) as userID, username, avatar 
+            "select bin_to_uuid(userID) as userID, username, avatar, timezone
                    from userProfiles 
                    where userID = uuid_to_bin(?);"
         );
@@ -277,7 +281,7 @@ class DbManager
             $query = $this->dbConn->prepare(
                 "select bin_to_uuid(mt.id) as id, bin_to_uuid(users.id) as userID, 
                          bin_to_uuid(rooms.id) as roomID, email, users.passwordHash as passwordHash, 
-                         username, avatar, name as roomName, unix_timestamp(postDate) as postDate, content 
+                         username, avatar, timezone, name as roomName, unix_timestamp(postDate) as postDate, content 
                        from (select * from messages 
                        where roomID = uuid_to_bin(?) 
                          and postDate < (select postDate from messages where id=uuid_to_bin(?))
@@ -294,7 +298,7 @@ class DbManager
             $query = $this->dbConn->prepare(
                 "select bin_to_uuid(mt.id) as id, bin_to_uuid(users.id) as userID, 
                          bin_to_uuid(rooms.id) as roomID, email, users.passwordHash as passwordHash, 
-                         username, avatar, name as roomName, unix_timestamp(postDate) as postDate, content 
+                         username, avatar, timezone, name as roomName, unix_timestamp(postDate) as postDate, content 
                        from (select * from messages 
                        where roomID = uuid_to_bin(?) 
                        order by postDate desc limit ?) as mt 

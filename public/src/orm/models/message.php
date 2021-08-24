@@ -1,8 +1,4 @@
 <?php
-
-
-use JetBrains\PhpStorm\ArrayShape;
-
 include_once __DIR__ . "/../dbManager.php";
 include_once __DIR__ . "/user.php";
 include_once __DIR__ . "/userProfile.php";
@@ -18,13 +14,16 @@ class Message
     private int $postDate;
     private string $content;
 
+    private string $oldDate = "Y:m:d H:i";
+    private string $recentDate = "H:i";
+
 
     public static function fromAssoc(array $messageData): Message
     {
         return new Message(
             $messageData["id"],
             new User($messageData["userID"], $messageData["email"], $messageData["passwordHash"]),
-            new UserProfile($messageData["userID"], $messageData["username"], $messageData["avatar"]),
+            new UserProfile($messageData["userID"], $messageData["username"], $messageData["avatar"], $messageData["timezone"]),
             new PublicRoom($messageData["roomID"], $messageData["roomName"]),
             $messageData["postDate"],
             $messageData["content"]
@@ -41,7 +40,7 @@ class Message
             "username" => $this->userProfile->getUsername(),
             "avatar" => $this->userProfile->getAvatar(),
             "content" => $this->content,
-            "postDate" => $this->postDate
+            "postDate" => $this->getFormattedPostDate()
         ];
     }
 
@@ -57,6 +56,7 @@ class Message
         $this->room = $room;
         $this->postDate = $postDate;
         $this->content = $content;
+
     }
 
     public function getID(): string
@@ -82,6 +82,23 @@ class Message
     public function getPostDate(): int
     {
         return $this->postDate;
+    }
+
+    public function getFormattedPostDate(): string
+    {
+        $tomorrow = new DateTime("tomorrow");
+        $then =  DateTime::createFromFormat(
+            "U",
+            $this->postDate,
+            new DateTimeZone("UTC")
+        );
+        $then->setTimezone(new DateTimeZone($this->userProfile->getTimezone()));
+        if (($diff = $tomorrow->getTimestamp() - $then->getTimestamp()) < 86400 ) { // difference less than one day
+            return "Today at "  . $then->format($this->recentDate);
+        } else if ($diff < 172800) { // difference less than two days
+            return "Yesterday at " . $then->format($this->recentDate);
+        }
+        return $then->format($this->oldDate);
     }
 
     public function getContent(): string

@@ -7,6 +7,7 @@ include_once __DIR__ . "/fields/textField.php";
 include_once __DIR__ . "/fields/radioField.php";
 include_once __DIR__ . "/fields/passwordField.php";
 include_once __DIR__ . "/fields/submitField.php";
+include_once __DIR__ . "/fields/checkboxField.php";
 
 
 class RoomCreateForm extends Form
@@ -15,12 +16,18 @@ class RoomCreateForm extends Form
     {
         parent::__construct([
             new TextField("Chat room name:", "name"),
+
+            // old version
+            // [
+            //     new RadioField("Public room:", "type", "public", true, id: "enable-passwords"),
+            //     new RadioField("Private room:", "type", "private", id: "disable-passwords")
+            // ],
+
+            new CheckboxField("Password protected?", "name", "public", "password-protect"),
             [
-                new RadioField("Public room:", "type", "public", true, id: "enable-passwords"),
-                new RadioField("Private room:", "type", "private", id: "disable-passwords")
-            ],
             new PasswordField("Room password:", "password1", mustValidate: false),
             new PasswordField("Retype password:", "password2", mustValidate: false)
+            ]
         ], new SubmitField("room-submit", "Create"), $classPrefix);
     }
 

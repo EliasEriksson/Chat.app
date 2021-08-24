@@ -20,12 +20,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <html lang="en">
 <head>
     <?php include "$rootURL/includes/head.php" ?>
+    <script src="/script/formValidation/createRoomForm.js" defer></script>
     <title>Room | Create</title>
 </head>
 <body>
 <?php include "$rootURL/includes/header.php" ?>
 <section class="hero">
-<?= $roomCreateForm->toHTML() ?>
+    <?= $roomCreateForm->toHTML() ?>
 </section>
 <?php include "$rootURL/includes/footer.php" ?>
 </body>

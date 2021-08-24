@@ -22,6 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <html lang="en">
 <head>
     <?php include "$rootURL/includes/head.php" ?>
+    <script src="/script/formValidation/userProfileRegisterForm.js" type="module"></script>
     <title>Profile</title>
 </head>
 <body>

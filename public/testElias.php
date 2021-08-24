@@ -1,12 +1,15 @@
+<?php
+include_once __DIR__ . "/config.php";
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
-    <?php include "$rootURL/includes/head.php" ?>
     <title>testElias.php</title>
 </head>
 <body>
-<?php include "$rootURL/includes/header.php" ?>
-
-<?php include "$rootURL/includes/footer.php" ?>
+<?php
+echo (new DateTime("tomorrow"))->format("Y:m:d H:i:s") . "<br>";
+?>
 </body>
 </html>
