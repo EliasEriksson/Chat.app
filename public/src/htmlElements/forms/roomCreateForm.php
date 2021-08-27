@@ -23,7 +23,7 @@ class RoomCreateForm extends Form
             //     new RadioField("Private room:", "type", "private", id: "disable-passwords")
             // ],
 
-            new CheckboxField("Password protected?", "name", "public", "password-protect"),
+            new CheckboxField("Password protected?", "type", "public", "password-protect"),
             [
             new PasswordField("Room password:", "password1", mustValidate: false),
             new PasswordField("Retype password:", "password2", mustValidate: false)
