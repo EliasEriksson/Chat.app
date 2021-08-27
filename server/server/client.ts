@@ -42,7 +42,7 @@ export class Client {
         }
     }
 
-    receive = async (): Promise<{ [key: string]: string }> => {
+    receive = async (): Promise<{ [action: string]: {[attr: string]: string} }> => {
         let jsonString;
         while (this.open) {
             if (!(jsonString = this.messageQueue.shift())) {

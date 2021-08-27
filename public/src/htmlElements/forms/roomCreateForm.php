@@ -16,10 +16,10 @@ class RoomCreateForm extends Form
     {
         parent::__construct([
             new TextField("Chat room name:", "name"),
-            new CheckboxField("Password protected?", "type", "public", "password-protect"),
+            new CheckboxField("Password protected?", "type", "public", "password-protect", mustValidate: false),
             [
-                new PasswordField("Room password:", "password1", refillOnFailedPost: false),
-                new PasswordField("Retype password:", "password2", refillOnFailedPost: false)
+                new PasswordField("Room password:", "password1", mustValidate: false, refillOnFailedPost: false),
+                new PasswordField("Retype password:", "password2", mustValidate: false, refillOnFailedPost: false),
             ]
         ], new SubmitField("room-submit", "Create"), $classPrefix);
     }
@@ -31,10 +31,9 @@ class RoomCreateForm extends Form
             return null;
         }
         if ($_POST["type"] === "private") {
-            if ($_POST["password1"] === $_POST["password2"]) {
+            if (isset($_POST["password1"]) && isset($_POST["password2"]) && $_POST["password1"] === $_POST["password2"]) {
                 $password = $_POST["password1"];
             } else {
-                echo "set error" . "<br>";
                 $this->setError("Passwords doesnt match.");
                 return null;
             }
