@@ -52,7 +52,7 @@ const main = () => {
         chatSendElement.addEventListener("click", () => {
             let message = chatBoxElement.value;
             console.log("sending message to the server...");
-            client.send(message);
+            client.requestMessage(message);
             console.log("message sent to the server.")
             chatBoxElement.value = "";
         });

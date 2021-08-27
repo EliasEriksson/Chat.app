@@ -50,15 +50,25 @@ export class Client {
 
     ping = () => {
         this.socket.send(JSON.stringify({
-            "ping": "pong"
+            "ping": {
+                "ping": "pong"
+            }
         }));
     }
 
-    send = (data) => {
+    requestMessage = (data) => {
         this.socket.send(JSON.stringify({
-            "content": data,
-            "roomID": this.roomID,
-            "session": this.sessionID
+            "message": {
+                "content": data,
+                "roomID": this.roomID,
+                "session": this.sessionID
+            }
+        }));
+    }
+
+    requestRoomUserList = () => {
+        this.socket.send(JSON.stringify({
+            "roomUserList": {}
         }));
     }
 
@@ -75,8 +85,10 @@ export class Client {
         console.log("connection with the server is established.");
         console.log("sending credentials to the server...");
         this.socket.send(JSON.stringify({
-            "sessionID": this.sessionID,
-            "roomID": this.roomID
+            "authenticate": {
+                "sessionID": this.sessionID,
+                "roomID": this.roomID
+            }
         }));
         console.log("credentials have been sent to the server.");
 
@@ -90,25 +102,32 @@ export class Client {
         throw new UnauthorizedError();
     }
 
+    messageResponse = (message) => {
+        message.postDate = formatUnixTime(message.postDate);
+        let html = render(this.template, message);
+        this.chatFeedElement.appendChild(html);
+    }
+
+    roomUserListResponse = (roomUserList) => {
+
+    }
+
     connect = async () => {
         try {
             await this.authenticate();
-            let response, html;
+            let response;
             console.log("awaiting response from the server...");
             while (response = await this.receive()) {
-                // console.log("received response from the server.");
-                // console.log("rendering message to html...");
-                response.postDate = formatUnixTime(response.postDate);
-                html = render(this.template, response);
-                // console.log("rendered html\n", html);
-                // console.log("adding html to the page.");
-                this.chatFeedElement.appendChild(html);
-                // console.log("awaiting response from the server...");
+                if (response.hasOwnProperty("message")) {
+                    this.messageResponse(response.message);
+                } else if (response.hasOwnProperty("roomUserList")) {
+                    this.roomUserListResponse(response.roomUserList);
+                }
             }
         } catch (error) {
             if (error instanceof UnauthorizedError) {
                 this.socket.close();
-            }  else {
+            } else {
                 this.socket.close();
                 throw error;
             }

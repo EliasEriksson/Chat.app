@@ -26,7 +26,7 @@ export class DbManager {
         await this.client.connect(credentials);
     }
 
-    createMessage = async (user: User, room: Room, message: string): Promise<Message|null> => {
+    createMessage = async (user: User, room: Room, message: string): Promise<Message | null> => {
         // @ts-ignore this is included in deno but not in typescript rule set
         let id: string = crypto.randomUUID();
         let date = Math.round(new Date().getTime() / 1000);
@@ -70,5 +70,19 @@ export class DbManager {
             return User.fromObject(userData)
         }
         return null;
+    }
+
+    getRoomUserList = async (room: Room): Promise<User[]> => {
+        let usersData = (await this.client.query(
+            "select bin_to_uuid(users.id) as id, email, username, avatar \
+             from ((select userID \
+                 from members where roomID = uuid_to_bin(?)) as m \
+                 join users on m.userID = users.id join userProfiles on m.userID = userProfiles.userID);",
+            [room.getID()]
+        ));
+        if (usersData) {
+            return usersData;
+        }
+        return [];
     }
 }
