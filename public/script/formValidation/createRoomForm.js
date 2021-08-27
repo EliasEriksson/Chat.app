@@ -11,4 +11,11 @@ const togglePrivate = () => {
 }
 
 checkbox.addEventListener('change', togglePrivate);
-window.addEventListener("load", togglePrivate);
+window.addEventListener("load", () => {
+    if (checkbox.value === "private") {
+        checkbox.checked = true;
+    } else {
+        checkbox.value = false;
+    }
+    togglePrivate()
+});
