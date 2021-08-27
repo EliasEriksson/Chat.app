@@ -34,7 +34,6 @@ class RoomCreateForm extends Form
             if (isset($_POST["password1"]) && isset($_POST["password2"]) && $_POST["password1"] === $_POST["password2"]) {
                 $password = $_POST["password1"];
             } else {
-                echo "set error" . "<br>";
                 $this->setError("Passwords doesnt match.");
                 return null;
             }
