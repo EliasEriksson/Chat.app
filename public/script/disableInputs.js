@@ -9,7 +9,6 @@
  * classes will be enabled and disabled by the enabler and disabler.
  */
 
-// TODO change this script to not rely on document.currentScript so defer can be added to script
 const disableTargets = (targetElements) => {
     for (let targetElement of targetElements) {
         targetElement.disabled = false;
@@ -23,7 +22,7 @@ const enableTargets = (targetElements) => {
 }
 
 const main = () => {
-    let script = document.currentScript;
+    let script = document.getElementById("disable-inputs");
     window.addEventListener("load", () => {
         let enableElement = document.getElementById(script.getAttribute("data-enable"));
         let disableElement = document.getElementById(script.getAttribute("data-disable"));

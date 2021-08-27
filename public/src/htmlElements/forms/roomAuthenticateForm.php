@@ -18,7 +18,7 @@ class RoomAuthenticateForm extends Form
         $this->room = $room;
 
         parent::__construct([
-            new PasswordField("$roomName's password", "password")
+            new PasswordField("$roomName's password", "password", refillOnFailedPost: false)
         ], new SubmitField("authenticate-submit", "Authenticate"), $classPrefix);
     }
 
@@ -38,6 +38,7 @@ class RoomAuthenticateForm extends Form
             return $dbManager->createMembership($this->room, $user);
         }
 
+        $this->setError("Wrong password.");
         return false;
     }
 }

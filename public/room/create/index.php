@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <html lang="en">
 <head>
     <?php include "$rootURL/includes/head.php" ?>
-    <script src="/script/formValidation/createRoomForm.js" defer></script>
+    <script src="/script/formValidation/createRoomForm.js" type="module"></script>
     <title>Room | Create</title>
 </head>
 <body>

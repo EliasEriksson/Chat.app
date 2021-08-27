@@ -16,17 +16,10 @@ class RoomCreateForm extends Form
     {
         parent::__construct([
             new TextField("Chat room name:", "name"),
-
-            // old version
-            // [
-            //     new RadioField("Public room:", "type", "public", true, id: "enable-passwords"),
-            //     new RadioField("Private room:", "type", "private", id: "disable-passwords")
-            // ],
-
-            new CheckboxField("Password protected?", "name", "public", "password-protect"),
+            new CheckboxField("Password protected?", "type", "public", "password-protect"),
             [
-            new PasswordField("Room password:", "password1", mustValidate: false),
-            new PasswordField("Retype password:", "password2", mustValidate: false)
+                new PasswordField("Room password:", "password1", refillOnFailedPost: false),
+                new PasswordField("Retype password:", "password2", refillOnFailedPost: false)
             ]
         ], new SubmitField("room-submit", "Create"), $classPrefix);
     }
@@ -38,9 +31,10 @@ class RoomCreateForm extends Form
             return null;
         }
         if ($_POST["type"] === "private") {
-            if (isset($_POST["password1"]) && isset($_POST["password2"])) {
+            if ($_POST["password1"] === $_POST["password2"]) {
                 $password = $_POST["password1"];
             } else {
+                echo "set error" . "<br>";
                 $this->setError("Passwords doesnt match.");
                 return null;
             }
@@ -63,17 +57,5 @@ class RoomCreateForm extends Form
             return null;
         }
         return null;
-    }
-
-    public function toHTML(): string
-    {
-        $html = parent::toHTML();
-        $html .= "<script  
-                      data-enable='enable-passwords'
-                      data-disable='disable-passwords'
-                      data-targets='password1-password-input password2-password-input' 
-                      src='/script/disableInputs.js'>
-                  </script>";
-        return $html;
     }
 }
