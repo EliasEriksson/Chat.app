@@ -1,5 +1,4 @@
 <?php
-
 include_once __DIR__ . "/../uuid.php";
 include_once __DIR__ . "/models/user.php";
 include_once __DIR__ . "/models/userProfile.php";
@@ -7,13 +6,6 @@ include_once __DIR__ . "/models/session.php";
 include_once __DIR__ . "/models/publicRoom.php";
 include_once __DIR__ . "/models/privateRoom.php";
 include_once __DIR__ . "/models/message.php";
-
-// Database manager
-// login info:
-// host: $_SERVER["DB_HOSTNAME"]
-// username: $_SERVER["DB_USER"]
-// password: $_SERVER["DB_PASS"]
-// database name: $_SERVER["DB_NAME"]
 
 
 class DbManager
@@ -259,6 +251,25 @@ class DbManager
         return null;
     }
 
+    public function getUserRooms(User $user): array // array of Room NOT necessarily private
+    {
+        $id = $user->getID();
+        $query = $this->dbConn->prepare(
+            "select rooms.id as id, name, passwordHash
+                   from ((select roomID from members where userID = uuid_to_bin(?)) as m
+                            join rooms on m.roomID = rooms.id);"
+        );
+        $rooms = [];
+        if ($query->bind_param("s", $id) && $query->execute()) {
+            if (($result = $query->get_result()) && $result->num_rows) {
+                while ($roomData = $result->fetch_assoc()) {
+                    array_push($rooms, PrivateRoom::fromAssoc($roomData));
+                }
+            }
+        }
+        return $rooms;
+    }
+
     public function getRoomUserProfileList(Room $room): array
     {
         $roomID = $room->getID();
@@ -386,6 +397,20 @@ class DbManager
                    where id = uuid_to_bin(?);"
         );
         if ($query->bind_param("s", $id) && $query->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function deleteMembership(User $user, Room $room): bool
+    {
+        $userID = $user->getID();
+        $roomID = $room->getID();
+
+        $query = $this->dbConn->prepare(
+            "delete from members where userID = uuid_to_bin(?) and roomID = uuid_to_bin(?); "
+        );
+        if ($query->bind_param("ss", $userID, $roomID) && $query->execute()) {
             return true;
         }
         return false;
