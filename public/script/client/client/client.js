@@ -118,9 +118,10 @@ export class Client {
             let response;
             console.log("awaiting response from the server...");
             while (response = await this.receive()) {
-                if (response.hasOwnProperty("message")) {
+                console.log(`this is the response object`, response);
+                if (response.message) {
                     this.messageResponse(response.message);
-                } else if (response.hasOwnProperty("roomUserList")) {
+                } else if (response.roomUserList) {
                     this.roomUserListResponse(response.roomUserList);
                 }
             }
