@@ -39,14 +39,18 @@ export class Server {
         this.dbManager = new DbManager();
     }
 
-    private addClient = (client: Client, room: Room) => {
+    private addClient = async (client: Client, room: Room) => {
         if (!this.rooms.has(room.getID())) {
             this.rooms.set(room.getID(), new Set<Client>());
         }
         this.rooms.get(room.getID())!.add(client);
+
+        for (const roomClient of this.rooms.get(room.getID())!) {
+            await this.roomUserListRequest(roomClient, room)
+        }
     }
 
-    private removeClient = (client: Client, room: Room) =>  {
+    private removeClient = async (client: Client, room: Room) => {
         if (this.rooms.has(room.getID())) {
             let clientRoom = this.rooms.get(room.getID())!
             if (clientRoom.has(client)) {
@@ -54,11 +58,15 @@ export class Server {
             }
             if (!clientRoom.size) {
                 this.rooms.delete(room.getID());
+            } else {
+                for (const roomClient of this.rooms.get(room.getID())!) {
+                    await this.roomUserListRequest(roomClient, room);
+                }
             }
         }
     }
 
-    private send = async (client: Client, room: Room, data: { [key: string]: any}): Promise<void> => {
+    private send = async (client: Client, room: Room, data: { [key: string]: any }): Promise<void> => {
         try {
             await client.send(data);
         } catch (error) {
@@ -97,7 +105,7 @@ export class Server {
     }
 
     private messageRequest = async (client: Client, request: { [attr: string]: string }, user: User, room: Room): Promise<void> => {
-        let message: Message|null = await this.dbManager.createMessage(user, room, request.content);
+        let message: Message | null = await this.dbManager.createMessage(user, room, request.content);
         if (!message) {
             console.log("message could not be created for some reason.")
             return;
@@ -120,6 +128,7 @@ export class Server {
     }
 
     private roomUserListRequest = async (client: Client, room: Room): Promise<void> => {
+        // TODO send online status.
         let userList = await this.dbManager.getRoomUserList(room);
         if (userList) {
             await this.send(client, room, {
@@ -138,7 +147,7 @@ export class Server {
             } else if (request.message) {
                 console.log("request was a message.");
                 await this.messageRequest(client, request.message, user, room);
-            } else if (request.roomUserList){
+            } else if (request.roomUserList) {
                 await this.roomUserListRequest(client, room);
             } else {
                 console.log(`no instruction for how to handle '${Object.keys(request)[0]}'`);
@@ -163,7 +172,7 @@ export class Server {
             console.log(`uncaught error:\n${error}\n`);
             return;
         }
-        this.addClient(client, room);
+        await this.addClient(client, room);
         console.log(this.rooms)
 
         try {
@@ -171,7 +180,7 @@ export class Server {
             await this.serve(client, user, room);
         } catch (error) {
             if (error instanceof ConnectionAborted) {
-                this.removeClient(client, room)
+                await this.removeClient(client, room)
                 console.log(this.rooms)
                 return;
             }
