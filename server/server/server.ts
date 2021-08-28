@@ -104,7 +104,7 @@ export class Server {
         }
         console.log("sending out message to all connected clients in this room...")
         for (let roomClient of this.rooms.get(room.getID())!) {
-            await this.send(client, room, {
+            await this.send(roomClient, room, {
                 "message": {
                     "id": message.getID(),
                     "userID": user.getID(),
@@ -135,10 +135,10 @@ export class Server {
             console.log("request received from a client.");
             if (request.ping) {
                 console.log("request was a ping.");
-            } else if (request.hasOwnProperty("message")) {
+            } else if (request.message) {
                 console.log("request was a message.");
                 await this.messageRequest(client, request.message, user, room);
-            } else if (request.hasOwnProperty("roomUserList")){
+            } else if (request.roomUserList){
                 await this.roomUserListRequest(client, room);
             } else {
                 console.log(`no instruction for how to handle '${Object.keys(request)[0]}'`);
