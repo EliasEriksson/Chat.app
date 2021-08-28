@@ -39,6 +39,13 @@ if (!$dbManager->isMember($user, $room)) {
 </head>
 <body>
 <?php include "$rootURL/includes/header.php" ?>
+<section class="room-user-list">
+    <?php $roomUserProfiles = $dbManager->getRoomUserProfileList($room);
+    foreach ($roomUserProfiles as $roomUserProfile) {
+        echo render("$rootURL/templates/userList.html", $roomUserProfile->getAllAsAssoc());
+    }
+    ?>
+</section>
 <section class="chat-room">
     <div id="chat-feed-container">
 

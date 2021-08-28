@@ -259,6 +259,28 @@ class DbManager
         return null;
     }
 
+    public function getRoomUserProfileList(Room $room): array
+    {
+        $roomID = $room->getID();
+
+        $query = $this->dbConn->prepare(
+            "select bin_to_uuid(userProfiles.userID) as userID, username, avatar, timezone
+                   from ((select userID
+                       from members where roomID = uuid_to_bin(?)) as m
+                        join userProfiles on m.userID = userProfiles.userID);"
+        );
+
+        $users = [];
+        if ($query->bind_param("s", $roomID) && $query->execute()) {
+            if (($result = $query->get_result()) && $result->num_rows) {
+                while ($userProfileData = $result->fetch_assoc()) {
+                    array_push($users, UserProfile::fromAssoc($userProfileData));
+                }
+            }
+        }
+        return $users;
+    }
+
     public function getRoom(string $id): ?Room
     {
         $query = $this->dbConn->prepare(
