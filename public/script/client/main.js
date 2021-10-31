@@ -18,7 +18,7 @@ const getConnectionURL = () => {
         return `ws://connect.${domain}`;
     }
     topDomain = topDomain.split("/")[0];
-    return `ws://connect.${domain}.${topDomain}`;
+    return `wss://connect.${domain}.${topDomain}`;
 }
 
 
