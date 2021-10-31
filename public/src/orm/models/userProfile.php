@@ -48,4 +48,13 @@ class UserProfile
     {
         return $this->timezone;
     }
+
+    public function getAllAsAssoc(): array {
+        return [
+            "id" => $this->id,
+            "username" => $this->username,
+            "avatar" => $this->avatar,
+            "timezone" => $this->timezone
+        ];
+    }
 }

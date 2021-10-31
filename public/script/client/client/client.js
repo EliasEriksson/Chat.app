@@ -109,7 +109,8 @@ export class Client {
     }
 
     roomUserListResponse = (roomUserList) => {
-
+        // TODO update the roomUserList on the page show online etc.
+        // to be able to show online status such info must first be sent from the server.
     }
 
     connect = async () => {
